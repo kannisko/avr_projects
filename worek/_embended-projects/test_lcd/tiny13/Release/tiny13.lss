@@ -1,0 +1,58 @@
+
+tiny13.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000046  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .comment      00000030  00000000  00000000  0000009a  2**0
+                  CONTENTS, READONLY
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	09 c0       	rjmp	.+18     	; 0x14 <__ctors_end>
+   2:	0e c0       	rjmp	.+28     	; 0x20 <__bad_interrupt>
+   4:	0d c0       	rjmp	.+26     	; 0x20 <__bad_interrupt>
+   6:	0c c0       	rjmp	.+24     	; 0x20 <__bad_interrupt>
+   8:	0b c0       	rjmp	.+22     	; 0x20 <__bad_interrupt>
+   a:	0a c0       	rjmp	.+20     	; 0x20 <__bad_interrupt>
+   c:	09 c0       	rjmp	.+18     	; 0x20 <__bad_interrupt>
+   e:	08 c0       	rjmp	.+16     	; 0x20 <__bad_interrupt>
+  10:	07 c0       	rjmp	.+14     	; 0x20 <__bad_interrupt>
+  12:	06 c0       	rjmp	.+12     	; 0x20 <__bad_interrupt>
+
+00000014 <__ctors_end>:
+  14:	11 24       	eor	r1, r1
+  16:	1f be       	out	0x3f, r1	; 63
+  18:	cf e9       	ldi	r28, 0x9F	; 159
+  1a:	cd bf       	out	0x3d, r28	; 61
+  1c:	02 d0       	rcall	.+4      	; 0x22 <main>
+  1e:	11 c0       	rjmp	.+34     	; 0x42 <_exit>
+
+00000020 <__bad_interrupt>:
+  20:	ef cf       	rjmp	.-34     	; 0x0 <__vectors>
+
+00000022 <main>:
+  22:	bb 9a       	sbi	0x17, 3	; 23
+  24:	81 e0       	ldi	r24, 0x01	; 1
+  26:	91 e0       	ldi	r25, 0x01	; 1
+  28:	88 23       	and	r24, r24
+  2a:	11 f0       	breq	.+4      	; 0x30 <main+0xe>
+  2c:	c3 9a       	sbi	0x18, 3	; 24
+  2e:	01 c0       	rjmp	.+2      	; 0x32 <main+0x10>
+  30:	c3 98       	cbi	0x18, 3	; 24
+  32:	89 27       	eor	r24, r25
+  34:	ef eb       	ldi	r30, 0xBF	; 191
+  36:	fd e5       	ldi	r31, 0x5D	; 93
+  38:	31 97       	sbiw	r30, 0x01	; 1
+  3a:	f1 f7       	brne	.-4      	; 0x38 <main+0x16>
+  3c:	00 c0       	rjmp	.+0      	; 0x3e <__SP_L__+0x1>
+  3e:	00 00       	nop
+  40:	f3 cf       	rjmp	.-26     	; 0x28 <main+0x6>
+
+00000042 <_exit>:
+  42:	f8 94       	cli
+
+00000044 <__stop_program>:
+  44:	ff cf       	rjmp	.-2      	; 0x44 <__stop_program>

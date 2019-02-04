@@ -1,0 +1,55 @@
+
+==============================================================================
+Iloœæ Wartoœæ                                          Oznaczenie na schemacie
+==============================================================================
+2    1K                                                R14 R15
+4    1N4148                                            D7 D8 D9
+                                                       D10
+1    3K9 - rezystor dobraæ do regulacji kontrastu      R13
+1    4MHz                                              X2
+1    niepotrzebna - zrobiæ zworê                       L2
+2    33pF                                              C15 C16
+2    47K                                               R16 R17
+2    47u                                               C13 C14
+1    100                                               R7
+4    100nF                                             C1 C5 C6
+                                                       C7
+6    150                                               R1 R2 R3
+                                                       R4 R5 R6
+4    470nF                                             C17 C18
+                                                       C19 C20
+2    560                                               R8 R9
+2    680                                               R10 R11
+1    7805                                              U1
+1    ATMEGA8                                           U3
+4    BC547B                                            T3 T4 T5 T6                                                      
+2    BPW17                                             T1 T2
+1    LCD 2x8                                           P2
+1    S1                                                1
+1    S2                                                2
+1    S3                                                3
+6    TSHA3400                                          D1 D2 D3
+                                                       D4 D5 D6
+1    Z³¹cze programowania ISP (listwa ko³kowa)         P1
+1    DIP28W (podstawka w¹ska do procesora )            -
+==============================================================================
+
+
+
+
+==============================================================================
+Programowanie bitów konfiguracyjnych procesora
+==============================================================================
+
+Bity konfiguracyjne ATmega8L
+
+
+SUT0=0
+SUT1=0
+BODEN=0
+BODLEVEL=0
+CKPOT=0
+
+Pozosta³e =1
+
+==============================================================================

@@ -1,0 +1,65 @@
+   1               		.file	"hooks.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.text
+   8               	.Ltext0:
+   9               		.cfi_sections	.debug_frame
+  10               		.section	.text.__empty,"ax",@progbits
+  12               	__empty:
+  13               	.LFB0:
+  14               		.file 1 "c:/arduino-1.6.6/hardware/arduino/avr/cores/arduino/hooks.c"
+   1:c:/arduino-1.6.6/hardware/arduino/avr/cores/arduino\hooks.c **** /*
+   2:c:/arduino-1.6.6/hardware/arduino/avr/cores/arduino\hooks.c ****   Copyright (c) 2012 Arduino.  All right reserved.
+   3:c:/arduino-1.6.6/hardware/arduino/avr/cores/arduino\hooks.c **** 
+   4:c:/arduino-1.6.6/hardware/arduino/avr/cores/arduino\hooks.c ****   This library is free software; you can redistribute it and/or
+   5:c:/arduino-1.6.6/hardware/arduino/avr/cores/arduino\hooks.c ****   modify it under the terms of the GNU Lesser General Public
+   6:c:/arduino-1.6.6/hardware/arduino/avr/cores/arduino\hooks.c ****   License as published by the Free Software Foundation; either
+   7:c:/arduino-1.6.6/hardware/arduino/avr/cores/arduino\hooks.c ****   version 2.1 of the License, or (at your option) any later version.
+   8:c:/arduino-1.6.6/hardware/arduino/avr/cores/arduino\hooks.c **** 
+   9:c:/arduino-1.6.6/hardware/arduino/avr/cores/arduino\hooks.c ****   This library is distributed in the hope that it will be useful,
+  10:c:/arduino-1.6.6/hardware/arduino/avr/cores/arduino\hooks.c ****   but WITHOUT ANY WARRANTY; without even the implied warranty of
+  11:c:/arduino-1.6.6/hardware/arduino/avr/cores/arduino\hooks.c ****   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  12:c:/arduino-1.6.6/hardware/arduino/avr/cores/arduino\hooks.c ****   See the GNU Lesser General Public License for more details.
+  13:c:/arduino-1.6.6/hardware/arduino/avr/cores/arduino\hooks.c **** 
+  14:c:/arduino-1.6.6/hardware/arduino/avr/cores/arduino\hooks.c ****   You should have received a copy of the GNU Lesser General Public
+  15:c:/arduino-1.6.6/hardware/arduino/avr/cores/arduino\hooks.c ****   License along with this library; if not, write to the Free Software
+  16:c:/arduino-1.6.6/hardware/arduino/avr/cores/arduino\hooks.c ****   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+  17:c:/arduino-1.6.6/hardware/arduino/avr/cores/arduino\hooks.c **** */
+  18:c:/arduino-1.6.6/hardware/arduino/avr/cores/arduino\hooks.c **** 
+  19:c:/arduino-1.6.6/hardware/arduino/avr/cores/arduino\hooks.c **** /**
+  20:c:/arduino-1.6.6/hardware/arduino/avr/cores/arduino\hooks.c ****  * Empty yield() hook.
+  21:c:/arduino-1.6.6/hardware/arduino/avr/cores/arduino\hooks.c ****  *
+  22:c:/arduino-1.6.6/hardware/arduino/avr/cores/arduino\hooks.c ****  * This function is intended to be used by library writers to build
+  23:c:/arduino-1.6.6/hardware/arduino/avr/cores/arduino\hooks.c ****  * libraries or sketches that supports cooperative threads.
+  24:c:/arduino-1.6.6/hardware/arduino/avr/cores/arduino\hooks.c ****  *
+  25:c:/arduino-1.6.6/hardware/arduino/avr/cores/arduino\hooks.c ****  * Its defined as a weak symbol and it can be redefined to implement a
+  26:c:/arduino-1.6.6/hardware/arduino/avr/cores/arduino\hooks.c ****  * real cooperative scheduler.
+  27:c:/arduino-1.6.6/hardware/arduino/avr/cores/arduino\hooks.c ****  */
+  28:c:/arduino-1.6.6/hardware/arduino/avr/cores/arduino\hooks.c **** static void __empty() {
+  15               		.loc 1 28 0
+  16               		.cfi_startproc
+  17               	/* prologue: function */
+  18               	/* frame size = 0 */
+  19               	/* stack size = 0 */
+  20               	.L__stack_usage = 0
+  21 0000 0895      		ret
+  22               		.cfi_endproc
+  23               	.LFE0:
+  25               		.weak	yield
+  26               		.set	yield,__empty
+  27               		.text
+  28               	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 hooks.c
+C:\DOCUME~1\pawel\USTAWI~1\Temp\cctKUIPQ.s:2      *ABS*:0000003e __SP_H__
+C:\DOCUME~1\pawel\USTAWI~1\Temp\cctKUIPQ.s:3      *ABS*:0000003d __SP_L__
+C:\DOCUME~1\pawel\USTAWI~1\Temp\cctKUIPQ.s:4      *ABS*:0000003f __SREG__
+C:\DOCUME~1\pawel\USTAWI~1\Temp\cctKUIPQ.s:5      *ABS*:00000000 __tmp_reg__
+C:\DOCUME~1\pawel\USTAWI~1\Temp\cctKUIPQ.s:6      *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\pawel\USTAWI~1\Temp\cctKUIPQ.s:12     .text.__empty:00000000 __empty
+C:\DOCUME~1\pawel\USTAWI~1\Temp\cctKUIPQ.s:12     .text.__empty:00000000 yield
+
+NO UNDEFINED SYMBOLS

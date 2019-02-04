@@ -1,0 +1,2 @@
+build/libarduino.a(hooks.o): \
+ c:/arduino-1.6.6/hardware/arduino/avr/cores/arduino/hooks.c

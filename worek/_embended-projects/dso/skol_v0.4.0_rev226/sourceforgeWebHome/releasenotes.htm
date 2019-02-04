@@ -1,0 +1,226 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+	<title>SK&Aring;L - FPGA based Oscilloscope with universal Java Oscilloscope GUI.</title>
+</head>
+<body>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://apps.sourceforge.net/piwik/skol/" : "http://apps.sourceforge.net/piwik/skol/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+piwik_action_name = '';
+piwik_idsite = 1;
+piwik_url = pkBaseURL + "piwik.php";
+piwik_log(piwik_action_name, piwik_idsite, piwik_url);
+</script>
+<object><noscript><p><img src="http://apps.sourceforge.net/piwik/skol/piwik.php?idsite=1" alt="piwik"/></p></noscript></object>
+<!-- End Piwik Tag -->
+<center>
+<h1>SK&Aring;L</h1>
+
+<h2>Release Notes:</h2>
+</center>
+<h3>skol_v0.4.0</h3>
+
+
+<h4>Features implemented:</h4>
+	<ul>
+		<li>Aquires 152 Data Points per PictureFrame with a Sampling Rate of 1,5 MSamples per sec. (Fastest that onboard ADC can.)</li>
+		<li>Resolution can be changed (152,152*5 152*10 DataPoints). A maximum Resolution of 1k5 Samples is implemented now(limited by FPGA Size)</li>
+		<li>2 Channels.</li>
+		<li>Maximal Voltage Range of the Starter Board ADC Input: 400mV to 2900mV</li>
+		<li>Trigger at a specific Level</li>
+		<li>Trigger at positive edge or negative edge.</li>
+		<li>Different TimeDomains (TimePerDiv from 10us per Div to 50ms per Div).</li>
+		<li>Serial RS232 Communication at a BaudRate of 115200.</li>
+		<li>FPGA runs in polling mode. The Controller Gui requests every Data Frame seperately.</li>
+		<li>Single DataAquisition - one Voltage Value</li>
+		<li>Settings will be tested after sending to Device.</li>	
+		<li>X & Y Axis Offset adjustable in Controller for each Channel</li>
+	</ul>
+
+<h4>Features missing (so far) :</h4>
+	<ul>
+		<li>Faster ADC - Maybe begin of January</li>
+		<li>Input Voltage Range Adjustage</li>
+	</ul>
+	
+<h4>Known Issues:</h4>
+	<ul>
+		<li>TimePerDiv Error is about 5 Percent now. (Could not test further because of missing HW now)</li>
+		<li>Trigger Level not full tested</li>
+		<li>Dataaquisition has to be stopped before any Setting on the Device can take place (e.g. TriggerLevel, TriggerEdge, TimePerDiv etc.), and started afterwards.</li>
+	</ul>
+<!-- ----------------------------------------------------------------------------------------------------------------------->
+<!-- ----------------------------------------------------------------------------------------------------------------------->
+<h3>skol_v0.3.1</h3>
+
+
+<h4>Features implemented:</h4>
+	<ul>
+		<li>Aquires 152 Data Points per PictureFrame with a Sampling Rate of 1,5 MSamples per sec. (Fastest that onboard ADC can.)</li>
+		<li>2 Channels.</li>
+		<li>Maximal Voltage Range of the Starter Board ADC Input: 400mV to 2900mV</li>
+		<li>Trigger at a specific Level</li>
+		<li>Trigger at positive edge or negative edge.</li>
+		<li>Different TimeDomains (TimePerDiv from 10us per Div to 50ms per Div).</li>
+		<li>Serial RS232 Communication at a BaudRate of 115200.</li>
+		<li>FPGA runs in polling mode. The Controller Gui requests every Data Frame seperately.</li>
+		<li>Single DataAquisition - one Voltage Value</li>
+		<li>Settings will be tested after sending to Device.</li>
+
+	</ul>
+
+<h4>Features missing (so far) :</h4>
+	<ul>
+		<li>Faster ADC - Maybe begin of January</li>
+		<li>Input Voltage Range Adjustage</li>
+	</ul>
+	
+<h4>Known Issues:</h4>
+	<ul>
+		<li>Trigger Level not full tested</li>
+		<li>Dataaquisition has to be stopped before any Setting on the Device can take place (e.g. TriggerLevel, TriggerEdge, TimePerDiv etc.), and started afterwards.</li>
+	</ul>
+<!-- ----------------------------------------------------------------------------------------------------------------------->
+<h3>skol_v0.3.0</h3>
+
+
+<h4>Features implemented:</h4>
+	<ul>
+		<li>Aquires 152 Data Points per PictureFrame with a Sampling Rate of 1,5 MSamples per sec. (Fastest that onboard ADC can.)</li>
+		<li>2 Channels.</li>
+		<li>Maximal Voltage Range of the Starter Board ADC Input: 400mV to 2900mV</li>
+		<li>Trigger at a specific Level</li>
+		<li>Trigger at positive edge or negative edge.</li>
+		<li>Different TimeDomains (TimePerDiv from 10us per Div to 50ms per Div).</li>
+		<li>Serial RS232 Communication at a BaudRate of 115200.</li>
+		<li>FPGA runs in polling mode. The Controller Gui requests every Data Frame seperately.</li>
+		<li>Single DataAquisition - one Voltage Value</li>
+		<li>Settings will be tested after sending to Device.</li>
+
+	</ul>
+
+<h4>Features missing (so far) :</h4>
+	<ul>
+		<li>Faster ADC - Maybe begin of January</li>
+		<li>Input Voltage Range Adjustage</li>
+	</ul>
+	
+<h4>Known Issues:</h4>
+	<ul>
+		<li>Trigger Level not full tested</li>
+		<li>Osci Simulator broken</li>
+		<li>Dataaquisition has to be stopped before any Setting on the Device can take place (e.g. TriggerLevel, TriggerEdge, TimePerDiv etc.), and started afterwards.</li>
+	</ul>
+<!-- ----------------------------------------------------------------------------------------------------------------------->
+<h3>skol_v0.2.2</h3>
+
+
+<h4>Features implemented:</h4>
+	<ul>
+		<li>Aquires 152 Data Points per PictureFrame with a Sampling Rate of 1,5 MSamples per sec. (Fastest that onboard ADC can.)</li>
+		<li>Maximal Voltage Range of the Starter Board ADC Input: 400mV to 2900mV</li>
+		<li>Trigger at a specific Level</li>
+		<li>Trigger at positive edge or negative edge.</li>
+		<li>Different TimeDomains (TimePerDiv from 10us per Div to 50ms per Div).</li>
+		<li>Serial RS232 Communication at a BaudRate of 115200.</li>
+		<li>FPGA runs in polling mode. The Controller Gui requests every Data Frame seperately.</li>
+		<li>Single DataAquisition - one Voltage Value</li>
+		<li>Settings will be tested after sending to Device.</li>
+	</ul>
+
+<h4>Features missing (so far) :</h4>
+	<ul>
+		<li>Faster ADC - Maybe begin of January</li>
+		<li>Input Voltage Range Adjustage</li>
+		<li>Send and Display Second Channel.</li>
+	</ul>
+	
+<h4>Known Issues:</h4>
+	<ul>
+		<li>Trigger Level not full tested</li>
+		<li>Mac OS X Application does not start :The executable flag is not set on  &quot;MacOsX&#47SkolController.app&#47Contents&#47MacOSJavaApplicationStub&quot;<br> The same for OsciDummy.</li>
+	</ul>
+<!-- ----------------------------------------------------------------------------------------------------------------------->
+<h3>skol_v0.2.1</h3>
+
+
+<h4>Features implemented:</h4>
+	<ul>
+		<li>Aquires 152 Data Points per PictureFrame with a Sampling Rate of 1,5 MSamples per sec. (Fastest that onboard ADC can.)</li>
+		<li>Maximal Voltage Range of the Starter Board ADC Input: 400mV to 2900mV</li>
+		<li>Trigger at a specific Level</li>
+		<li>Trigger at positive edge or negative edge.</li>
+		<li>Different TimeDomains (TimePerDiv from 10us per Div to 50ms per Div).</li>
+		<li>Serial RS232 Communication at a BaudRate of 115200.</li>
+		<li>FPGA runs in polling mode. The Controller Gui requests every Data Frame seperately.</li>
+		<li>Single DataAquisition - one Voltage Value</li>
+	</ul>
+
+<h4>Features missing (so far) :</h4>
+	<ul>
+		<li>Faster ADC</li>
+		<li>Input Voltage Range Adjustage</li>
+		<li>Check Data after Setting, Reply from FPGA</li>
+		<li>Send and Display Second Channel.</li>
+		<li>LCD Display usage</li>
+	</ul>
+	
+<h4>Known Issues:</h4>
+	<ul>
+		<li>Trigger Level not full tested</li>
+	</ul>
+
+<!-- ----------------------------------------------------------------------------------------------------------------------->
+<h3>skol_v0.2.0_rev_63 </h3>
+
+
+
+<h4>Features implemented:</h4>
+	<ul>
+		<li>Aquires 152 Data Points with a Sampling Rate of 1,5MegaSamples per sec. Data Points were reduced for TimePerDiv Function to work with rational values.</li>
+		<li>FPGA will is now running in polling mode. The Controller Gui requests every Data Frame seperately.</li>
+		<li>Trigger PosEdge NegEdge</li>
+		<li>Single DataAquisition - one Voltage Value</li>
+		<li>Trigger Level</li>
+		<li>Change Sampling Rate on the Fly (TimePerDiv)</li>
+
+	</ul>
+
+<h4>Features missing (so far) :</h4>
+	<ul>
+		<li>LCD Display usage</li>
+		<li>Check Data after Setting, if it's ok</li>
+	</ul>
+	
+<h4>Known Issues:</h4>
+	<ul>
+		<li>Trigger Level not full tested</li>
+	</ul>
+
+<!-- ----------------------------------------------------------------------------------------------------------------------->
+<h3>skol_v0.1.0_rev19</h3>
+
+Initial release.<br>
+Prototype Status.<br>
+
+<h4>Features implemented:</h4>
+	<ul>
+		<li>Aquires 250 Data Points with a Sampling Rate of 1,5MegaSamples per sec</li>
+		<li>FPGA will is now running in polling mode. The Controller Gui requests every Data Frame seperately.</li>
+
+	</ul>
+
+<h4>Features missing (so far) :</h4>
+	<ul>
+		<li>Trigger</li>
+		<li>Trigger Level</li>
+		<li>Trigger PosEdge NegEdge</li>
+		<li>Change Sampling Rate on the Fly (TimePerDiv)</li>
+	</ul>
+</body>
+</html>

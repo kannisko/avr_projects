@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+
+	 <!-- Skol Settings File skol.sourforge.net  -->
+
+  <entry key="PackageVersion">SVN Trunk</entry>
+	 
+
+  <entry key="defaultComPort">COM5</entry>
+
+  <!-- Defines Time Per Div Settings -->
+  <entry key="TimePerDivEntrys">12</entry>
+  <entry key="TimePerDivEntry00">10.0 us</entry>
+  <entry key="TimePerDivEntry01">20.0 us</entry>
+  <entry key="TimePerDivEntry02">50.0 us</entry>
+  <entry key="TimePerDivEntry03">100.0 us</entry>
+  <entry key="TimePerDivEntry04">200.0 us</entry>
+  <entry key="TimePerDivEntry05">500.0 us</entry>
+  <entry key="TimePerDivEntry06">1.0 ms</entry>
+  <entry key="TimePerDivEntry07">2.0 ms</entry>
+  <entry key="TimePerDivEntry08">5.0 ms</entry>
+  <entry key="TimePerDivEntry09">10.0 ms</entry>
+  <entry key="TimePerDivEntry10">20.0 ms</entry>
+  <entry key="TimePerDivEntry11">50.0 ms</entry>
+  
+  <!-- Defines Additional TimePerDiv Multipliers / by increasing sampleDepth = Points per Sample -->
+  <entry key="defaultSamplesPerFrameModeEntrys">3</entry>
+  <entry key="defaultSamplesPerFrameMode00">1</entry>
+  <entry key="defaultSamplesPerFrameMode01">5</entry>
+  <entry key="defaultSamplesPerFrameMode02">10</entry>
+  
+  
+
+ </properties>

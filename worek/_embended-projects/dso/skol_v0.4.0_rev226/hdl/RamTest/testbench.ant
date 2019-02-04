@@ -1,0 +1,264 @@
+--------------------------------------------------------------------------------
+-- Copyright (c) 1995-2007 Xilinx, Inc.
+-- All Right Reserved.
+--------------------------------------------------------------------------------
+--   ____  ____ 
+--  /   /\/   / 
+-- /___/  \  /    Vendor: Xilinx 
+-- \   \   \/     Version : 9.2.04i
+--  \   \         Application : ISE
+--  /   /         Filename : testbench.ant
+-- /___/   /\     Timestamp : Wed Oct 29 14:44:34 2008
+-- \   \  /  \ 
+--  \___\/\___\ 
+--
+--Command: 
+--Design Name: testbench
+--Device: Xilinx
+--
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+USE IEEE.STD_LOGIC_TEXTIO.ALL;
+USE STD.TEXTIO.ALL;
+
+ENTITY testbench IS
+END testbench;
+
+ARCHITECTURE testbench_arch OF testbench IS
+    FILE RESULTS: TEXT OPEN WRITE_MODE IS "C:\skol\hdl\RamTest\testbench.ano";
+
+    COMPONENT top
+        PORT (
+            CLK_50M : In std_logic;
+            BTN_NORTH : In std_logic;
+            LED_0 : Out std_logic;
+            LED_1 : Out std_logic;
+            LED_2 : Out std_logic;
+            LED_3 : Out std_logic;
+            LED_4 : Out std_logic;
+            LED_5 : Out std_logic;
+            LED_6 : Out std_logic;
+            LED_7 : Out std_logic
+        );
+    END COMPONENT;
+
+    SIGNAL CLK_50M : std_logic := '0';
+    SIGNAL BTN_NORTH : std_logic := '0';
+    SIGNAL LED_0 : std_logic := '0';
+    SIGNAL LED_1 : std_logic := '0';
+    SIGNAL LED_2 : std_logic := '0';
+    SIGNAL LED_3 : std_logic := '0';
+    SIGNAL LED_4 : std_logic := '0';
+    SIGNAL LED_5 : std_logic := '0';
+    SIGNAL LED_6 : std_logic := '0';
+    SIGNAL LED_7 : std_logic := '0';
+
+    SHARED VARIABLE TX_ERROR : INTEGER := 0;
+    SHARED VARIABLE TX_OUT : LINE;
+
+    constant PERIOD : time := 200 ns;
+    constant DUTY_CYCLE : real := 0.5;
+    constant OFFSET : time := 100 ns;
+
+    BEGIN
+        UUT : top
+        PORT MAP (
+            CLK_50M => CLK_50M,
+            BTN_NORTH => BTN_NORTH,
+            LED_0 => LED_0,
+            LED_1 => LED_1,
+            LED_2 => LED_2,
+            LED_3 => LED_3,
+            LED_4 => LED_4,
+            LED_5 => LED_5,
+            LED_6 => LED_6,
+            LED_7 => LED_7
+        );
+
+        PROCESS    -- clock process for CLK_50M
+        BEGIN
+            WAIT for OFFSET;
+            CLOCK_LOOP : LOOP
+                CLK_50M <= '0';
+                WAIT FOR (PERIOD - (PERIOD * DUTY_CYCLE));
+                CLK_50M <= '1';
+                WAIT FOR (PERIOD * DUTY_CYCLE);
+            END LOOP CLOCK_LOOP;
+        END PROCESS;
+
+        PROCESS    -- Annotation process for CLK_50M
+            VARIABLE TX_TIME : INTEGER := 0;
+
+            PROCEDURE ANNOTATE_LED_0(
+                TX_TIME : INTEGER
+            ) IS
+                VARIABLE TX_STR : String(1 to 4096);
+                VARIABLE TX_LOC : LINE;
+            BEGIN
+                STD.TEXTIO.write(TX_LOC, string'("Annotate["));
+                STD.TEXTIO.write(TX_LOC, TX_TIME);
+                STD.TEXTIO.write(TX_LOC, string'(", LED_0, "));
+                IEEE.STD_LOGIC_TEXTIO.write(TX_LOC, LED_0);
+                STD.TEXTIO.write(TX_LOC, string'("]"));
+                TX_STR(TX_LOC.all'range) := TX_LOC.all;
+                STD.TEXTIO.writeline(RESULTS, TX_LOC);
+                STD.TEXTIO.Deallocate(TX_LOC);
+            END;
+            PROCEDURE ANNOTATE_LED_1(
+                TX_TIME : INTEGER
+            ) IS
+                VARIABLE TX_STR : String(1 to 4096);
+                VARIABLE TX_LOC : LINE;
+            BEGIN
+                STD.TEXTIO.write(TX_LOC, string'("Annotate["));
+                STD.TEXTIO.write(TX_LOC, TX_TIME);
+                STD.TEXTIO.write(TX_LOC, string'(", LED_1, "));
+                IEEE.STD_LOGIC_TEXTIO.write(TX_LOC, LED_1);
+                STD.TEXTIO.write(TX_LOC, string'("]"));
+                TX_STR(TX_LOC.all'range) := TX_LOC.all;
+                STD.TEXTIO.writeline(RESULTS, TX_LOC);
+                STD.TEXTIO.Deallocate(TX_LOC);
+            END;
+            PROCEDURE ANNOTATE_LED_2(
+                TX_TIME : INTEGER
+            ) IS
+                VARIABLE TX_STR : String(1 to 4096);
+                VARIABLE TX_LOC : LINE;
+            BEGIN
+                STD.TEXTIO.write(TX_LOC, string'("Annotate["));
+                STD.TEXTIO.write(TX_LOC, TX_TIME);
+                STD.TEXTIO.write(TX_LOC, string'(", LED_2, "));
+                IEEE.STD_LOGIC_TEXTIO.write(TX_LOC, LED_2);
+                STD.TEXTIO.write(TX_LOC, string'("]"));
+                TX_STR(TX_LOC.all'range) := TX_LOC.all;
+                STD.TEXTIO.writeline(RESULTS, TX_LOC);
+                STD.TEXTIO.Deallocate(TX_LOC);
+            END;
+            PROCEDURE ANNOTATE_LED_3(
+                TX_TIME : INTEGER
+            ) IS
+                VARIABLE TX_STR : String(1 to 4096);
+                VARIABLE TX_LOC : LINE;
+            BEGIN
+                STD.TEXTIO.write(TX_LOC, string'("Annotate["));
+                STD.TEXTIO.write(TX_LOC, TX_TIME);
+                STD.TEXTIO.write(TX_LOC, string'(", LED_3, "));
+                IEEE.STD_LOGIC_TEXTIO.write(TX_LOC, LED_3);
+                STD.TEXTIO.write(TX_LOC, string'("]"));
+                TX_STR(TX_LOC.all'range) := TX_LOC.all;
+                STD.TEXTIO.writeline(RESULTS, TX_LOC);
+                STD.TEXTIO.Deallocate(TX_LOC);
+            END;
+            PROCEDURE ANNOTATE_LED_4(
+                TX_TIME : INTEGER
+            ) IS
+                VARIABLE TX_STR : String(1 to 4096);
+                VARIABLE TX_LOC : LINE;
+            BEGIN
+                STD.TEXTIO.write(TX_LOC, string'("Annotate["));
+                STD.TEXTIO.write(TX_LOC, TX_TIME);
+                STD.TEXTIO.write(TX_LOC, string'(", LED_4, "));
+                IEEE.STD_LOGIC_TEXTIO.write(TX_LOC, LED_4);
+                STD.TEXTIO.write(TX_LOC, string'("]"));
+                TX_STR(TX_LOC.all'range) := TX_LOC.all;
+                STD.TEXTIO.writeline(RESULTS, TX_LOC);
+                STD.TEXTIO.Deallocate(TX_LOC);
+            END;
+            PROCEDURE ANNOTATE_LED_5(
+                TX_TIME : INTEGER
+            ) IS
+                VARIABLE TX_STR : String(1 to 4096);
+                VARIABLE TX_LOC : LINE;
+            BEGIN
+                STD.TEXTIO.write(TX_LOC, string'("Annotate["));
+                STD.TEXTIO.write(TX_LOC, TX_TIME);
+                STD.TEXTIO.write(TX_LOC, string'(", LED_5, "));
+                IEEE.STD_LOGIC_TEXTIO.write(TX_LOC, LED_5);
+                STD.TEXTIO.write(TX_LOC, string'("]"));
+                TX_STR(TX_LOC.all'range) := TX_LOC.all;
+                STD.TEXTIO.writeline(RESULTS, TX_LOC);
+                STD.TEXTIO.Deallocate(TX_LOC);
+            END;
+            PROCEDURE ANNOTATE_LED_6(
+                TX_TIME : INTEGER
+            ) IS
+                VARIABLE TX_STR : String(1 to 4096);
+                VARIABLE TX_LOC : LINE;
+            BEGIN
+                STD.TEXTIO.write(TX_LOC, string'("Annotate["));
+                STD.TEXTIO.write(TX_LOC, TX_TIME);
+                STD.TEXTIO.write(TX_LOC, string'(", LED_6, "));
+                IEEE.STD_LOGIC_TEXTIO.write(TX_LOC, LED_6);
+                STD.TEXTIO.write(TX_LOC, string'("]"));
+                TX_STR(TX_LOC.all'range) := TX_LOC.all;
+                STD.TEXTIO.writeline(RESULTS, TX_LOC);
+                STD.TEXTIO.Deallocate(TX_LOC);
+            END;
+            PROCEDURE ANNOTATE_LED_7(
+                TX_TIME : INTEGER
+            ) IS
+                VARIABLE TX_STR : String(1 to 4096);
+                VARIABLE TX_LOC : LINE;
+            BEGIN
+                STD.TEXTIO.write(TX_LOC, string'("Annotate["));
+                STD.TEXTIO.write(TX_LOC, TX_TIME);
+                STD.TEXTIO.write(TX_LOC, string'(", LED_7, "));
+                IEEE.STD_LOGIC_TEXTIO.write(TX_LOC, LED_7);
+                STD.TEXTIO.write(TX_LOC, string'("]"));
+                TX_STR(TX_LOC.all'range) := TX_LOC.all;
+                STD.TEXTIO.writeline(RESULTS, TX_LOC);
+                STD.TEXTIO.Deallocate(TX_LOC);
+            END;
+        BEGIN
+            WAIT for 1 fs;
+            ANNOTATE_LED_0(0);
+            ANNOTATE_LED_1(0);
+            ANNOTATE_LED_2(0);
+            ANNOTATE_LED_3(0);
+            ANNOTATE_LED_4(0);
+            ANNOTATE_LED_5(0);
+            ANNOTATE_LED_6(0);
+            ANNOTATE_LED_7(0);
+            WAIT for OFFSET;
+            TX_TIME := TX_TIME + 100;
+            ANNO_LOOP : LOOP
+                --Rising Edge
+                WAIT for 115 ns;
+                TX_TIME := TX_TIME + 115;
+                ANNOTATE_LED_0(TX_TIME);
+                ANNOTATE_LED_1(TX_TIME);
+                ANNOTATE_LED_2(TX_TIME);
+                ANNOTATE_LED_3(TX_TIME);
+                ANNOTATE_LED_4(TX_TIME);
+                ANNOTATE_LED_5(TX_TIME);
+                ANNOTATE_LED_6(TX_TIME);
+                ANNOTATE_LED_7(TX_TIME);
+                WAIT for 85 ns;
+                TX_TIME := TX_TIME + 85;
+            END LOOP ANNO_LOOP;
+        END PROCESS;
+
+        PROCESS
+            BEGIN
+                -- -------------  Current Time:  385ns
+                WAIT FOR 385 ns;
+                BTN_NORTH <= '1';
+                -- -------------------------------------
+                -- -------------  Current Time:  585ns
+                WAIT FOR 200 ns;
+                BTN_NORTH <= '0';
+                -- -------------------------------------
+                WAIT FOR 9615 ns;
+
+                STD.TEXTIO.write(TX_OUT, string'("Total[]"));
+                STD.TEXTIO.writeline(RESULTS, TX_OUT);
+                ASSERT (FALSE) REPORT
+                    "Success! Simulation for annotation completed"
+                    SEVERITY FAILURE;
+            END PROCESS;
+
+    END testbench_arch;
+

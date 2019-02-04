@@ -1,0 +1,584 @@
+   1               		.file	"mylcd.cpp"
+   2               	__SREG__ = 0x3f
+   3               	__SP_H__ = 0x3e
+   4               	__SP_L__ = 0x3d
+   5               	__CCP__  = 0x34
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+  15               	.Ltext0:
+  16               	.global	_Z11delay100us8h
+  18               	_Z11delay100us8h:
+  19               	.LFB34:
+  20               	.LM1:
+  21               	.LVL0:
+  22               	/* prologue: function */
+  23               	/* frame size = 0 */
+  24               	.LM2:
+  25 0000 24E6      		ldi r18,lo8(100)
+  26 0002 30E0      		ldi r19,hi8(100)
+  27 0004 00C0      		rjmp .L2
+  28               	.L3:
+  29               	/* #APP */
+  30               	 ;  83 "./HD44780.hpp" 1
+  31               		delayus8_loop11: 
+  32 0006 0000      		nop 
+  33 0008 2A95      		dec r18 
+  34 000a 01F4      		brne delayus8_loop11 
+  35               		
+  36               	 ;  0 "" 2
+  37               	.LM3:
+  38               	/* #NOAPP */
+  39 000c 8150      		subi r24,lo8(-(-1))
+  40               	.LVL1:
+  41               	.L2:
+  42               	.LM4:
+  43 000e 8823      		tst r24
+  44 0010 01F4      		brne .L3
+  45               	/* epilogue start */
+  46               	.LM5:
+  47 0012 0895      		ret
+  48               	.LFE34:
+  50               		.weak	_ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5port
+  52               	_ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portgELi5EE
+  53               	.LFB54:
+  54               	.LM6:
+  55               	.LVL2:
+  56               	/* prologue: function */
+  57               	/* frame size = 0 */
+  58               	.LBB483:
+  59               	.LBB484:
+  60               	.LBB485:
+  61               	.LBB486:
+  62               	.LM7:
+  63 0014 2D9A      		sbi 37-32,5
+  64               	.LBE486:
+  65               	.LBE485:
+  66               	.LBE484:
+  67               	.LBE483:
+  68               	.LBB487:
+  69               	.LBB488:
+  70               	.LM8:
+  71 0016 80FF      		sbrs r24,0
+  72 0018 00C0      		rjmp .L6
+  73               	.LVL3:
+  74               	.LBB489:
+  75               	.LBB490:
+  76               	.LM9:
+  77 001a 739A      		sbi 46-32,3
+  78 001c 00C0      		rjmp .L7
+  79               	.L6:
+  80               	.LBE490:
+  81               	.LBE489:
+  82               	.LBB491:
+  83               	.LBB492:
+  84 001e 7398      		cbi 46-32,3
+  85               	.L7:
+  86               	.LBE492:
+  87               	.LBE491:
+  88               	.LBE488:
+  89               	.LBE487:
+  90               	.LBB493:
+  91               	.LBB494:
+  92               	.LM10:
+  93 0020 81FF      		sbrs r24,1
+  94 0022 00C0      		rjmp .L8
+  95               	.LBB495:
+  96               	.LBB496:
+  97               	.LM11:
+  98 0024 A59A      		sbi 52-32,5
+  99 0026 00C0      		rjmp .L9
+ 100               	.L8:
+ 101               	.LBE496:
+ 102               	.LBE495:
+ 103               	.LBB497:
+ 104               	.LBB498:
+ 105 0028 A598      		cbi 52-32,5
+ 106               	.L9:
+ 107               	.LBE498:
+ 108               	.LBE497:
+ 109               	.LBE494:
+ 110               	.LBE493:
+ 111               	.LBB499:
+ 112               	.LBB500:
+ 113               	.LM12:
+ 114 002a 82FF      		sbrs r24,2
+ 115 002c 00C0      		rjmp .L10
+ 116               	.LBB501:
+ 117               	.LBB502:
+ 118               	.LM13:
+ 119 002e 759A      		sbi 46-32,5
+ 120 0030 00C0      		rjmp .L11
+ 121               	.L10:
+ 122               	.LBE502:
+ 123               	.LBE501:
+ 124               	.LBB503:
+ 125               	.LBB504:
+ 126 0032 7598      		cbi 46-32,5
+ 127               	.L11:
+ 128               	.LBE504:
+ 129               	.LBE503:
+ 130               	.LBE500:
+ 131               	.LBE499:
+ 132               	.LBB505:
+ 133               	.LBB506:
+ 134               	.LM14:
+ 135 0034 83FF      		sbrs r24,3
+ 136 0036 00C0      		rjmp .L12
+ 137               	.LBB507:
+ 138               	.LBB508:
+ 139               	.LM15:
+ 140 0038 749A      		sbi 46-32,4
+ 141 003a 00C0      		rjmp .L13
+ 142               	.L12:
+ 143               	.LBE508:
+ 144               	.LBE507:
+ 145               	.LBB509:
+ 146               	.LBB510:
+ 147 003c 7498      		cbi 46-32,4
+ 148               	.L13:
+ 149               	.LBE510:
+ 150               	.LBE509:
+ 151               	.LBE506:
+ 152               	.LBE505:
+ 153               	.LBB511:
+ 154               	.LBB512:
+ 155               	.LBB513:
+ 156               	.LBB514:
+ 157               	.LM16:
+ 158 003e 2D98      		cbi 37-32,5
+ 159               	/* epilogue start */
+ 160               	.LBE514:
+ 161               	.LBE513:
+ 162               	.LBE512:
+ 163               	.LBE511:
+ 164               	.LM17:
+ 165 0040 0895      		ret
+ 166               	.LFE54:
+ 168               		.weak	_ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5port
+ 170               	_ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portgELi5EE
+ 171               	.LFB56:
+ 172               	.LM18:
+ 173               	.LVL4:
+ 174 0042 1F93      		push r17
+ 175               	/* prologue: function */
+ 176               	/* frame size = 0 */
+ 177 0044 182F      		mov r17,r24
+ 178               	.LM19:
+ 179 0046 8295      		swap r24
+ 180               	.LVL5:
+ 181 0048 8F70      		andi r24,lo8(15)
+ 182 004a 0E94 0000 		call _ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portg
+ 183               	.LM20:
+ 184 004e 812F      		mov r24,r17
+ 185 0050 0E94 0000 		call _ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portg
+ 186               	.LBB515:
+ 187               	.LBB516:
+ 188               	.LBB517:
+ 189               	.LBB518:
+ 190               	.LBB519:
+ 191               	.LBB520:
+ 192               	.LBB521:
+ 193               	.LBB522:
+ 194               	.LM21:
+ 195 0054 88EC      		ldi r24,lo8(200)
+ 196 0056 90E0      		ldi r25,hi8(200)
+ 197               	.LVL6:
+ 198               	/* #APP */
+ 199               	 ;  110 "c:/winavr-20100110/lib/gcc/../../avr/include/util/delay_basic.h" 1
+ 200 0058 0197      		1: sbiw r24,1
+ 201 005a 01F4      		brne 1b
+ 202               	 ;  0 "" 2
+ 203               	/* epilogue start */
+ 204               	/* #NOAPP */
+ 205               	.LBE522:
+ 206               	.LBE521:
+ 207               	.LBE520:
+ 208               	.LBE519:
+ 209               	.LBE518:
+ 210               	.LBE517:
+ 211               	.LBE516:
+ 212               	.LBE515:
+ 213               	.LM22:
+ 214 005c 1F91      		pop r17
+ 215               	.LVL7:
+ 216 005e 0895      		ret
+ 217               	.LFE56:
+ 219               		.weak	_ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5port
+ 221               	_ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portgELi5EE
+ 222               	.LFB55:
+ 223               	.LM23:
+ 224               	.LVL8:
+ 225               	/* prologue: function */
+ 226               	/* frame size = 0 */
+ 227               	.LBB523:
+ 228               	.LBB524:
+ 229               	.LBB525:
+ 230               	.LBB526:
+ 231               	.LM24:
+ 232 0060 2E98      		cbi 37-32,6
+ 233               	.LBE526:
+ 234               	.LBE525:
+ 235               	.LBE524:
+ 236               	.LBE523:
+ 237               	.LM25:
+ 238 0062 0E94 0000 		call _ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portg
+ 239               	.LVL9:
+ 240               	/* epilogue start */
+ 241               	.LM26:
+ 242 0066 0895      		ret
+ 243               	.LFE55:
+ 245               	.global	main
+ 247               	main:
+ 248               	.LFB41:
+ 249               	.LM27:
+ 250 0068 0F93      		push r16
+ 251 006a 1F93      		push r17
+ 252               	/* prologue: function */
+ 253               	/* frame size = 0 */
+ 254               	.LBB527:
+ 255               	.LBB528:
+ 256               	.LBB529:
+ 257               	.LBB530:
+ 258               	.LBB531:
+ 259               	.LM28:
+ 260 006c 279A      		sbi 36-32,7
+ 261               	.LBE531:
+ 262               	.LBE530:
+ 263               	.LBE529:
+ 264               	.LBE528:
+ 265               	.LBB532:
+ 266               	.LBB533:
+ 267               	.LBB534:
+ 268               	.LBB535:
+ 269               	.LBB536:
+ 270               	.LBB537:
+ 271 006e 269A      		sbi 36-32,6
+ 272               	.LBE537:
+ 273               	.LBE536:
+ 274               	.LBE535:
+ 275               	.LBE534:
+ 276               	.LBB538:
+ 277               	.LBB539:
+ 278               	.LBB540:
+ 279               	.LBB541:
+ 280 0070 259A      		sbi 36-32,5
+ 281               	.LBE541:
+ 282               	.LBE540:
+ 283               	.LBE539:
+ 284               	.LBE538:
+ 285               	.LBB542:
+ 286               	.LBB543:
+ 287               	.LBB544:
+ 288               	.LBB545:
+ 289               	.LM29:
+ 290 0072 6B9A      		sbi 45-32,3
+ 291               	.LBE545:
+ 292               	.LBE544:
+ 293               	.LBE543:
+ 294               	.LBE542:
+ 295               	.LBB546:
+ 296               	.LBB547:
+ 297               	.LBB548:
+ 298               	.LBB549:
+ 299               	.LM30:
+ 300 0074 9D9A      		sbi 51-32,5
+ 301               	.LBE549:
+ 302               	.LBE548:
+ 303               	.LBE547:
+ 304               	.LBE546:
+ 305               	.LBB550:
+ 306               	.LBB551:
+ 307               	.LBB552:
+ 308               	.LBB553:
+ 309               	.LM31:
+ 310 0076 6D9A      		sbi 45-32,5
+ 311               	.LBE553:
+ 312               	.LBE552:
+ 313               	.LBE551:
+ 314               	.LBE550:
+ 315               	.LBB554:
+ 316               	.LBB555:
+ 317               	.LBB556:
+ 318               	.LBB557:
+ 319 0078 6C9A      		sbi 45-32,4
+ 320               	.LBE557:
+ 321               	.LBE556:
+ 322               	.LBE555:
+ 323               	.LBE554:
+ 324               	.LBB558:
+ 325               	.LBB559:
+ 326               	.LBB560:
+ 327               	.LBB561:
+ 328               	.LBB562:
+ 329               	.LM32:
+ 330 007a 80E6      		ldi r24,lo8(-5536)
+ 331 007c 9AEE      		ldi r25,hi8(-5536)
+ 332               	.LVL10:
+ 333               	/* #APP */
+ 334               	 ;  110 "c:/winavr-20100110/lib/gcc/../../avr/include/util/delay_basic.h" 1
+ 335 007e 0197      		1: sbiw r24,1
+ 336 0080 01F4      		brne 1b
+ 337               	 ;  0 "" 2
+ 338               	/* #NOAPP */
+ 339               	.LBE562:
+ 340               	.LBE561:
+ 341               	.LBE560:
+ 342               	.LBE559:
+ 343               	.LBE558:
+ 344               	.LBB563:
+ 345               	.LBB564:
+ 346               	.LBB565:
+ 347               	.LBB566:
+ 348               	.LM33:
+ 349 0082 2E98      		cbi 37-32,6
+ 350               	.LBE566:
+ 351               	.LBE565:
+ 352               	.LBE564:
+ 353               	.LBE563:
+ 354               	.LBB567:
+ 355               	.LBB568:
+ 356               	.LBB569:
+ 357               	.LBB570:
+ 358 0084 2D98      		cbi 37-32,5
+ 359               	.LBE570:
+ 360               	.LBE569:
+ 361               	.LBE568:
+ 362               	.LBE567:
+ 363               	.LM34:
+ 364 0086 83E0      		ldi r24,lo8(3)
+ 365               	.LVL11:
+ 366 0088 0E94 0000 		call _ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portg
+ 367               	.LBB571:
+ 368               	.LBB572:
+ 369               	.LBB573:
+ 370               	.LBB574:
+ 371               	.LBB575:
+ 372               	.LM35:
+ 373 008c 00E2      		ldi r16,lo8(20000)
+ 374 008e 1EE4      		ldi r17,hi8(20000)
+ 375 0090 C801      		movw r24,r16
+ 376               	.LVL12:
+ 377               	/* #APP */
+ 378               	 ;  110 "c:/winavr-20100110/lib/gcc/../../avr/include/util/delay_basic.h" 1
+ 379 0092 0197      		1: sbiw r24,1
+ 380 0094 01F4      		brne 1b
+ 381               	 ;  0 "" 2
+ 382               	/* #NOAPP */
+ 383               	.LBE575:
+ 384               	.LBE574:
+ 385               	.LBE573:
+ 386               	.LBE572:
+ 387               	.LBE571:
+ 388               	.LM36:
+ 389 0096 83E0      		ldi r24,lo8(3)
+ 390               	.LVL13:
+ 391 0098 0E94 0000 		call _ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portg
+ 392               	.LBB576:
+ 393               	.LBB577:
+ 394               	.LBB578:
+ 395               	.LBB579:
+ 396               	.LBB580:
+ 397               	.LM37:
+ 398 009c C801      		movw r24,r16
+ 399               	.LVL14:
+ 400               	/* #APP */
+ 401               	 ;  110 "c:/winavr-20100110/lib/gcc/../../avr/include/util/delay_basic.h" 1
+ 402 009e 0197      		1: sbiw r24,1
+ 403 00a0 01F4      		brne 1b
+ 404               	 ;  0 "" 2
+ 405               	/* #NOAPP */
+ 406               	.LBE580:
+ 407               	.LBE579:
+ 408               	.LBE578:
+ 409               	.LBE577:
+ 410               	.LBE576:
+ 411               	.LM38:
+ 412 00a2 83E0      		ldi r24,lo8(3)
+ 413               	.LVL15:
+ 414 00a4 0E94 0000 		call _ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portg
+ 415               	.LBB581:
+ 416               	.LBB582:
+ 417               	.LBB583:
+ 418               	.LBB584:
+ 419               	.LBB585:
+ 420               	.LM39:
+ 421 00a8 C801      		movw r24,r16
+ 422               	.LVL16:
+ 423               	/* #APP */
+ 424               	 ;  110 "c:/winavr-20100110/lib/gcc/../../avr/include/util/delay_basic.h" 1
+ 425 00aa 0197      		1: sbiw r24,1
+ 426 00ac 01F4      		brne 1b
+ 427               	 ;  0 "" 2
+ 428               	/* #NOAPP */
+ 429               	.LBE585:
+ 430               	.LBE584:
+ 431               	.LBE583:
+ 432               	.LBE582:
+ 433               	.LBE581:
+ 434               	.LM40:
+ 435 00ae 82E0      		ldi r24,lo8(2)
+ 436               	.LVL17:
+ 437 00b0 0E94 0000 		call _ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portg
+ 438               	.LBB586:
+ 439               	.LBB587:
+ 440               	.LBB588:
+ 441               	.LBB589:
+ 442               	.LBB590:
+ 443               	.LM41:
+ 444 00b4 80EA      		ldi r24,lo8(4000)
+ 445 00b6 9FE0      		ldi r25,hi8(4000)
+ 446               	.LVL18:
+ 447               	/* #APP */
+ 448               	 ;  110 "c:/winavr-20100110/lib/gcc/../../avr/include/util/delay_basic.h" 1
+ 449 00b8 0197      		1: sbiw r24,1
+ 450 00ba 01F4      		brne 1b
+ 451               	 ;  0 "" 2
+ 452               	/* #NOAPP */
+ 453               	.LBE590:
+ 454               	.LBE589:
+ 455               	.LBE588:
+ 456               	.LBE587:
+ 457               	.LBE586:
+ 458               	.LM42:
+ 459 00bc 88E2      		ldi r24,lo8(40)
+ 460               	.LVL19:
+ 461 00be 0E94 0000 		call _ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portg
+ 462               	.LM43:
+ 463 00c2 88E0      		ldi r24,lo8(8)
+ 464 00c4 0E94 0000 		call _ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portg
+ 465               	.LM44:
+ 466 00c8 81E0      		ldi r24,lo8(1)
+ 467 00ca 0E94 0000 		call _ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portg
+ 468               	.LBB591:
+ 469               	.LBB592:
+ 470               	.LBB593:
+ 471               	.LBB594:
+ 472               	.LBB595:
+ 473               	.LM45:
+ 474 00ce 80E4      		ldi r24,lo8(8000)
+ 475 00d0 9FE1      		ldi r25,hi8(8000)
+ 476               	.LVL20:
+ 477               	/* #APP */
+ 478               	 ;  110 "c:/winavr-20100110/lib/gcc/../../avr/include/util/delay_basic.h" 1
+ 479 00d2 0197      		1: sbiw r24,1
+ 480 00d4 01F4      		brne 1b
+ 481               	 ;  0 "" 2
+ 482               	/* #NOAPP */
+ 483               	.LBE595:
+ 484               	.LBE594:
+ 485               	.LBE593:
+ 486               	.LBE592:
+ 487               	.LBE591:
+ 488               	.LM46:
+ 489 00d6 86E0      		ldi r24,lo8(6)
+ 490               	.LVL21:
+ 491 00d8 0E94 0000 		call _ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portg
+ 492               	.LM47:
+ 493 00dc 8FE0      		ldi r24,lo8(15)
+ 494 00de 0E94 0000 		call _ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portg
+ 495               	.LBE533:
+ 496               	.LBE532:
+ 497               	.LBB596:
+ 498               	.LBB597:
+ 499               	.LBB598:
+ 500               	.LBB599:
+ 501               	.LBB600:
+ 502               	.LBB601:
+ 503               	.LM48:
+ 504 00e2 2E9A      		sbi 37-32,6
+ 505               	.LBE601:
+ 506               	.LBE600:
+ 507               	.LBE599:
+ 508               	.LBE598:
+ 509               	.LM49:
+ 510 00e4 81E6      		ldi r24,lo8(97)
+ 511 00e6 0E94 0000 		call _ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portg
+ 512 00ea 21E0      		ldi r18,lo8(1)
+ 513               	.LVL22:
+ 514               	.LBE597:
+ 515               	.LBE596:
+ 516               	.LBB602:
+ 517               	.LBB603:
+ 518               	.LBB604:
+ 519               	.LBB605:
+ 520               	.LBB606:
+ 521               	.LM50:
+ 522 00ec 40E9      		ldi r20,lo8(400)
+ 523 00ee 51E0      		ldi r21,hi8(400)
+ 524               	.LBE606:
+ 525               	.LBE605:
+ 526               	.LBE604:
+ 527               	.LBE603:
+ 528               	.LBE602:
+ 529               	.LM51:
+ 530 00f0 31E0      		ldi r19,lo8(1)
+ 531               	.LVL23:
+ 532               	.L22:
+ 533               	.LBB611:
+ 534               	.LBB612:
+ 535               	.LM52:
+ 536 00f2 2223      		tst r18
+ 537 00f4 01F0      		breq .L20
+ 538               	.LBB613:
+ 539               	.LBB614:
+ 540               	.LM53:
+ 541 00f6 2F9A      		sbi 37-32,7
+ 542 00f8 00C0      		rjmp .L26
+ 543               	.L20:
+ 544               	.LBE614:
+ 545               	.LBE613:
+ 546               	.LBB615:
+ 547               	.LBB616:
+ 548 00fa 2F98      		cbi 37-32,7
+ 549               	.L26:
+ 550 00fc 88E8      		ldi r24,lo8(5000)
+ 551 00fe 93E1      		ldi r25,hi8(5000)
+ 552               	.L24:
+ 553               	.LBE616:
+ 554               	.LBE615:
+ 555               	.LBE612:
+ 556               	.LBE611:
+ 557               	.LBB617:
+ 558               	.LBB610:
+ 559               	.LBB609:
+ 560               	.LBB608:
+ 561               	.LBB607:
+ 562               	.LM54:
+ 563 0100 FA01      		movw r30,r20
+ 564               	/* #APP */
+ 565               	 ;  110 "c:/winavr-20100110/lib/gcc/../../avr/include/util/delay_basic.h" 1
+ 566 0102 3197      		1: sbiw r30,1
+ 567 0104 01F4      		brne 1b
+ 568               	 ;  0 "" 2
+ 569               	/* #NOAPP */
+ 570               	.LBE607:
+ 571               	.LBE608:
+ 572               	.LM55:
+ 573 0106 0197      		sbiw r24,1
+ 574               	.LM56:
+ 575 0108 01F4      		brne .L24
+ 576               	.LBE609:
+ 577               	.LBE610:
+ 578               	.LBE617:
+ 579               	.LM57:
+ 580 010a 2327      		eor r18,r19
+ 581 010c 00C0      		rjmp .L22
+ 582               	.LBE527:
+ 583               	.LFE41:
+ 641               	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 mylcd.cpp
+C:\DOCUME~1\pawel\USTAWI~1\Temp/ccnxEAc3.s:2      *ABS*:0000003f __SREG__
+C:\DOCUME~1\pawel\USTAWI~1\Temp/ccnxEAc3.s:3      *ABS*:0000003e __SP_H__
+C:\DOCUME~1\pawel\USTAWI~1\Temp/ccnxEAc3.s:4      *ABS*:0000003d __SP_L__
+C:\DOCUME~1\pawel\USTAWI~1\Temp/ccnxEAc3.s:5      *ABS*:00000034 __CCP__
+C:\DOCUME~1\pawel\USTAWI~1\Temp/ccnxEAc3.s:6      *ABS*:00000000 __tmp_reg__
+C:\DOCUME~1\pawel\USTAWI~1\Temp/ccnxEAc3.s:7      *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\pawel\USTAWI~1\Temp/ccnxEAc3.s:18     .text:00000000 _Z11delay100us8h
+C:\DOCUME~1\pawel\USTAWI~1\Temp/ccnxEAc3.s:31     .text:00000006 delayus8_loop11
+C:\DOCUME~1\pawel\USTAWI~1\Temp/ccnxEAc3.s:52     .text:00000014 _ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portgELi5EEENS1_IS5_Li5EEENS1_IS5_Li4EEEE8sendHalfEh
+C:\DOCUME~1\pawel\USTAWI~1\Temp/ccnxEAc3.s:170    .text:00000042 _ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portgELi5EEENS1_IS5_Li5EEENS1_IS5_Li4EEEE4sendEh
+C:\DOCUME~1\pawel\USTAWI~1\Temp/ccnxEAc3.s:221    .text:00000060 _ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portgELi5EEENS1_IS5_Li5EEENS1_IS5_Li4EEEE7commandEh
+C:\DOCUME~1\pawel\USTAWI~1\Temp/ccnxEAc3.s:247    .text:00000068 main
+
+NO UNDEFINED SYMBOLS

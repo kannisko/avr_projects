@@ -1,0 +1,377 @@
+--------------------------------------------------------------------------------
+-- Copyright (c) 1995-2007 Xilinx, Inc.
+-- All Right Reserved.
+--------------------------------------------------------------------------------
+--   ____  ____ 
+--  /   /\/   / 
+-- /___/  \  /    Vendor: Xilinx 
+-- \   \   \/     Version : 9.2.04i
+--  \   \         Application : ISE
+--  /   /         Filename : testbench.ant
+-- /___/   /\     Timestamp : Sun Nov 02 16:12:32 2008
+-- \   \  /  \ 
+--  \___\/\___\ 
+--
+--Command: 
+--Design Name: testbench
+--Device: Xilinx
+--
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+USE IEEE.STD_LOGIC_TEXTIO.ALL;
+USE STD.TEXTIO.ALL;
+
+ENTITY testbench IS
+END testbench;
+
+ARCHITECTURE testbench_arch OF testbench IS
+    FILE RESULTS: TEXT OPEN WRITE_MODE IS "C:\skol\hdl\lcd_driver\testbench.ano";
+
+    COMPONENT lcd_byte_driver
+        PORT (
+            CLOCK : In std_logic;
+            RESET : In std_logic;
+            ENABLE : In std_logic;
+            LCD_DB_0 : Out std_logic;
+            LCD_DB_1 : Out std_logic;
+            LCD_DB_2 : Out std_logic;
+            LCD_DB_3 : Out std_logic;
+            LCD_DB_4 : Out std_logic;
+            LCD_DB_5 : Out std_logic;
+            LCD_DB_6 : Out std_logic;
+            LCD_DB_7 : Out std_logic;
+            LCD_E : Out std_logic;
+            LCD_RS : Out std_logic;
+            LCD_RW : Out std_logic;
+            init_done_o : Out std_logic;
+            dataByte_i : In std_logic_vector (7 DownTo 0);
+            writeIt_i : In std_logic;
+            writeDataDone_o : Out std_logic
+        );
+    END COMPONENT;
+
+    SIGNAL CLOCK : std_logic := '0';
+    SIGNAL RESET : std_logic := '0';
+    SIGNAL ENABLE : std_logic := '0';
+    SIGNAL LCD_DB_0 : std_logic := '0';
+    SIGNAL LCD_DB_1 : std_logic := '0';
+    SIGNAL LCD_DB_2 : std_logic := '0';
+    SIGNAL LCD_DB_3 : std_logic := '0';
+    SIGNAL LCD_DB_4 : std_logic := '0';
+    SIGNAL LCD_DB_5 : std_logic := '0';
+    SIGNAL LCD_DB_6 : std_logic := '0';
+    SIGNAL LCD_DB_7 : std_logic := '0';
+    SIGNAL LCD_E : std_logic := '0';
+    SIGNAL LCD_RS : std_logic := '0';
+    SIGNAL LCD_RW : std_logic := '0';
+    SIGNAL init_done_o : std_logic := '0';
+    SIGNAL dataByte_i : std_logic_vector (7 DownTo 0) := "00000000";
+    SIGNAL writeIt_i : std_logic := '0';
+    SIGNAL writeDataDone_o : std_logic := '0';
+
+    SHARED VARIABLE TX_ERROR : INTEGER := 0;
+    SHARED VARIABLE TX_OUT : LINE;
+
+    constant PERIOD : time := 20 us;
+    constant DUTY_CYCLE : real := 0.5;
+    constant OFFSET : time := 10 us;
+
+    BEGIN
+        UUT : lcd_byte_driver
+        PORT MAP (
+            CLOCK => CLOCK,
+            RESET => RESET,
+            ENABLE => ENABLE,
+            LCD_DB_0 => LCD_DB_0,
+            LCD_DB_1 => LCD_DB_1,
+            LCD_DB_2 => LCD_DB_2,
+            LCD_DB_3 => LCD_DB_3,
+            LCD_DB_4 => LCD_DB_4,
+            LCD_DB_5 => LCD_DB_5,
+            LCD_DB_6 => LCD_DB_6,
+            LCD_DB_7 => LCD_DB_7,
+            LCD_E => LCD_E,
+            LCD_RS => LCD_RS,
+            LCD_RW => LCD_RW,
+            init_done_o => init_done_o,
+            dataByte_i => dataByte_i,
+            writeIt_i => writeIt_i,
+            writeDataDone_o => writeDataDone_o
+        );
+
+        PROCESS    -- clock process for CLOCK
+        BEGIN
+            WAIT for OFFSET;
+            CLOCK_LOOP : LOOP
+                CLOCK <= '0';
+                WAIT FOR (PERIOD - (PERIOD * DUTY_CYCLE));
+                CLOCK <= '1';
+                WAIT FOR (PERIOD * DUTY_CYCLE);
+            END LOOP CLOCK_LOOP;
+        END PROCESS;
+
+        PROCESS    -- Annotation process for CLOCK
+            VARIABLE TX_TIME : INTEGER := 0;
+
+            PROCEDURE ANNOTATE_LCD_DB_0(
+                TX_TIME : INTEGER
+            ) IS
+                VARIABLE TX_STR : String(1 to 4096);
+                VARIABLE TX_LOC : LINE;
+            BEGIN
+                STD.TEXTIO.write(TX_LOC, string'("Annotate["));
+                STD.TEXTIO.write(TX_LOC, TX_TIME);
+                STD.TEXTIO.write(TX_LOC, string'(", LCD_DB_0, "));
+                IEEE.STD_LOGIC_TEXTIO.write(TX_LOC, LCD_DB_0);
+                STD.TEXTIO.write(TX_LOC, string'("]"));
+                TX_STR(TX_LOC.all'range) := TX_LOC.all;
+                STD.TEXTIO.writeline(RESULTS, TX_LOC);
+                STD.TEXTIO.Deallocate(TX_LOC);
+            END;
+            PROCEDURE ANNOTATE_LCD_DB_1(
+                TX_TIME : INTEGER
+            ) IS
+                VARIABLE TX_STR : String(1 to 4096);
+                VARIABLE TX_LOC : LINE;
+            BEGIN
+                STD.TEXTIO.write(TX_LOC, string'("Annotate["));
+                STD.TEXTIO.write(TX_LOC, TX_TIME);
+                STD.TEXTIO.write(TX_LOC, string'(", LCD_DB_1, "));
+                IEEE.STD_LOGIC_TEXTIO.write(TX_LOC, LCD_DB_1);
+                STD.TEXTIO.write(TX_LOC, string'("]"));
+                TX_STR(TX_LOC.all'range) := TX_LOC.all;
+                STD.TEXTIO.writeline(RESULTS, TX_LOC);
+                STD.TEXTIO.Deallocate(TX_LOC);
+            END;
+            PROCEDURE ANNOTATE_LCD_DB_2(
+                TX_TIME : INTEGER
+            ) IS
+                VARIABLE TX_STR : String(1 to 4096);
+                VARIABLE TX_LOC : LINE;
+            BEGIN
+                STD.TEXTIO.write(TX_LOC, string'("Annotate["));
+                STD.TEXTIO.write(TX_LOC, TX_TIME);
+                STD.TEXTIO.write(TX_LOC, string'(", LCD_DB_2, "));
+                IEEE.STD_LOGIC_TEXTIO.write(TX_LOC, LCD_DB_2);
+                STD.TEXTIO.write(TX_LOC, string'("]"));
+                TX_STR(TX_LOC.all'range) := TX_LOC.all;
+                STD.TEXTIO.writeline(RESULTS, TX_LOC);
+                STD.TEXTIO.Deallocate(TX_LOC);
+            END;
+            PROCEDURE ANNOTATE_LCD_DB_3(
+                TX_TIME : INTEGER
+            ) IS
+                VARIABLE TX_STR : String(1 to 4096);
+                VARIABLE TX_LOC : LINE;
+            BEGIN
+                STD.TEXTIO.write(TX_LOC, string'("Annotate["));
+                STD.TEXTIO.write(TX_LOC, TX_TIME);
+                STD.TEXTIO.write(TX_LOC, string'(", LCD_DB_3, "));
+                IEEE.STD_LOGIC_TEXTIO.write(TX_LOC, LCD_DB_3);
+                STD.TEXTIO.write(TX_LOC, string'("]"));
+                TX_STR(TX_LOC.all'range) := TX_LOC.all;
+                STD.TEXTIO.writeline(RESULTS, TX_LOC);
+                STD.TEXTIO.Deallocate(TX_LOC);
+            END;
+            PROCEDURE ANNOTATE_LCD_DB_4(
+                TX_TIME : INTEGER
+            ) IS
+                VARIABLE TX_STR : String(1 to 4096);
+                VARIABLE TX_LOC : LINE;
+            BEGIN
+                STD.TEXTIO.write(TX_LOC, string'("Annotate["));
+                STD.TEXTIO.write(TX_LOC, TX_TIME);
+                STD.TEXTIO.write(TX_LOC, string'(", LCD_DB_4, "));
+                IEEE.STD_LOGIC_TEXTIO.write(TX_LOC, LCD_DB_4);
+                STD.TEXTIO.write(TX_LOC, string'("]"));
+                TX_STR(TX_LOC.all'range) := TX_LOC.all;
+                STD.TEXTIO.writeline(RESULTS, TX_LOC);
+                STD.TEXTIO.Deallocate(TX_LOC);
+            END;
+            PROCEDURE ANNOTATE_LCD_DB_5(
+                TX_TIME : INTEGER
+            ) IS
+                VARIABLE TX_STR : String(1 to 4096);
+                VARIABLE TX_LOC : LINE;
+            BEGIN
+                STD.TEXTIO.write(TX_LOC, string'("Annotate["));
+                STD.TEXTIO.write(TX_LOC, TX_TIME);
+                STD.TEXTIO.write(TX_LOC, string'(", LCD_DB_5, "));
+                IEEE.STD_LOGIC_TEXTIO.write(TX_LOC, LCD_DB_5);
+                STD.TEXTIO.write(TX_LOC, string'("]"));
+                TX_STR(TX_LOC.all'range) := TX_LOC.all;
+                STD.TEXTIO.writeline(RESULTS, TX_LOC);
+                STD.TEXTIO.Deallocate(TX_LOC);
+            END;
+            PROCEDURE ANNOTATE_LCD_DB_6(
+                TX_TIME : INTEGER
+            ) IS
+                VARIABLE TX_STR : String(1 to 4096);
+                VARIABLE TX_LOC : LINE;
+            BEGIN
+                STD.TEXTIO.write(TX_LOC, string'("Annotate["));
+                STD.TEXTIO.write(TX_LOC, TX_TIME);
+                STD.TEXTIO.write(TX_LOC, string'(", LCD_DB_6, "));
+                IEEE.STD_LOGIC_TEXTIO.write(TX_LOC, LCD_DB_6);
+                STD.TEXTIO.write(TX_LOC, string'("]"));
+                TX_STR(TX_LOC.all'range) := TX_LOC.all;
+                STD.TEXTIO.writeline(RESULTS, TX_LOC);
+                STD.TEXTIO.Deallocate(TX_LOC);
+            END;
+            PROCEDURE ANNOTATE_LCD_DB_7(
+                TX_TIME : INTEGER
+            ) IS
+                VARIABLE TX_STR : String(1 to 4096);
+                VARIABLE TX_LOC : LINE;
+            BEGIN
+                STD.TEXTIO.write(TX_LOC, string'("Annotate["));
+                STD.TEXTIO.write(TX_LOC, TX_TIME);
+                STD.TEXTIO.write(TX_LOC, string'(", LCD_DB_7, "));
+                IEEE.STD_LOGIC_TEXTIO.write(TX_LOC, LCD_DB_7);
+                STD.TEXTIO.write(TX_LOC, string'("]"));
+                TX_STR(TX_LOC.all'range) := TX_LOC.all;
+                STD.TEXTIO.writeline(RESULTS, TX_LOC);
+                STD.TEXTIO.Deallocate(TX_LOC);
+            END;
+            PROCEDURE ANNOTATE_LCD_E(
+                TX_TIME : INTEGER
+            ) IS
+                VARIABLE TX_STR : String(1 to 4096);
+                VARIABLE TX_LOC : LINE;
+            BEGIN
+                STD.TEXTIO.write(TX_LOC, string'("Annotate["));
+                STD.TEXTIO.write(TX_LOC, TX_TIME);
+                STD.TEXTIO.write(TX_LOC, string'(", LCD_E, "));
+                IEEE.STD_LOGIC_TEXTIO.write(TX_LOC, LCD_E);
+                STD.TEXTIO.write(TX_LOC, string'("]"));
+                TX_STR(TX_LOC.all'range) := TX_LOC.all;
+                STD.TEXTIO.writeline(RESULTS, TX_LOC);
+                STD.TEXTIO.Deallocate(TX_LOC);
+            END;
+            PROCEDURE ANNOTATE_LCD_RS(
+                TX_TIME : INTEGER
+            ) IS
+                VARIABLE TX_STR : String(1 to 4096);
+                VARIABLE TX_LOC : LINE;
+            BEGIN
+                STD.TEXTIO.write(TX_LOC, string'("Annotate["));
+                STD.TEXTIO.write(TX_LOC, TX_TIME);
+                STD.TEXTIO.write(TX_LOC, string'(", LCD_RS, "));
+                IEEE.STD_LOGIC_TEXTIO.write(TX_LOC, LCD_RS);
+                STD.TEXTIO.write(TX_LOC, string'("]"));
+                TX_STR(TX_LOC.all'range) := TX_LOC.all;
+                STD.TEXTIO.writeline(RESULTS, TX_LOC);
+                STD.TEXTIO.Deallocate(TX_LOC);
+            END;
+            PROCEDURE ANNOTATE_LCD_RW(
+                TX_TIME : INTEGER
+            ) IS
+                VARIABLE TX_STR : String(1 to 4096);
+                VARIABLE TX_LOC : LINE;
+            BEGIN
+                STD.TEXTIO.write(TX_LOC, string'("Annotate["));
+                STD.TEXTIO.write(TX_LOC, TX_TIME);
+                STD.TEXTIO.write(TX_LOC, string'(", LCD_RW, "));
+                IEEE.STD_LOGIC_TEXTIO.write(TX_LOC, LCD_RW);
+                STD.TEXTIO.write(TX_LOC, string'("]"));
+                TX_STR(TX_LOC.all'range) := TX_LOC.all;
+                STD.TEXTIO.writeline(RESULTS, TX_LOC);
+                STD.TEXTIO.Deallocate(TX_LOC);
+            END;
+            PROCEDURE ANNOTATE_init_done_o(
+                TX_TIME : INTEGER
+            ) IS
+                VARIABLE TX_STR : String(1 to 4096);
+                VARIABLE TX_LOC : LINE;
+            BEGIN
+                STD.TEXTIO.write(TX_LOC, string'("Annotate["));
+                STD.TEXTIO.write(TX_LOC, TX_TIME);
+                STD.TEXTIO.write(TX_LOC, string'(", init_done_o, "));
+                IEEE.STD_LOGIC_TEXTIO.write(TX_LOC, init_done_o);
+                STD.TEXTIO.write(TX_LOC, string'("]"));
+                TX_STR(TX_LOC.all'range) := TX_LOC.all;
+                STD.TEXTIO.writeline(RESULTS, TX_LOC);
+                STD.TEXTIO.Deallocate(TX_LOC);
+            END;
+            PROCEDURE ANNOTATE_writeDataDone_o(
+                TX_TIME : INTEGER
+            ) IS
+                VARIABLE TX_STR : String(1 to 4096);
+                VARIABLE TX_LOC : LINE;
+            BEGIN
+                STD.TEXTIO.write(TX_LOC, string'("Annotate["));
+                STD.TEXTIO.write(TX_LOC, TX_TIME);
+                STD.TEXTIO.write(TX_LOC, string'(", writeDataDone_o, "));
+                IEEE.STD_LOGIC_TEXTIO.write(TX_LOC, writeDataDone_o);
+                STD.TEXTIO.write(TX_LOC, string'("]"));
+                TX_STR(TX_LOC.all'range) := TX_LOC.all;
+                STD.TEXTIO.writeline(RESULTS, TX_LOC);
+                STD.TEXTIO.Deallocate(TX_LOC);
+            END;
+        BEGIN
+            WAIT for 1 fs;
+            ANNOTATE_LCD_DB_0(0);
+            ANNOTATE_LCD_DB_1(0);
+            ANNOTATE_LCD_DB_2(0);
+            ANNOTATE_LCD_DB_3(0);
+            ANNOTATE_LCD_DB_4(0);
+            ANNOTATE_LCD_DB_5(0);
+            ANNOTATE_LCD_DB_6(0);
+            ANNOTATE_LCD_DB_7(0);
+            ANNOTATE_LCD_E(0);
+            ANNOTATE_LCD_RS(0);
+            ANNOTATE_LCD_RW(0);
+            ANNOTATE_init_done_o(0);
+            ANNOTATE_writeDataDone_o(0);
+            WAIT for OFFSET;
+            TX_TIME := TX_TIME + 10;
+            ANNO_LOOP : LOOP
+                --Rising Edge
+                WAIT for 11 us;
+                TX_TIME := TX_TIME + 11;
+                ANNOTATE_LCD_DB_0(TX_TIME);
+                ANNOTATE_LCD_DB_1(TX_TIME);
+                ANNOTATE_LCD_DB_2(TX_TIME);
+                ANNOTATE_LCD_DB_3(TX_TIME);
+                ANNOTATE_LCD_DB_4(TX_TIME);
+                ANNOTATE_LCD_DB_5(TX_TIME);
+                ANNOTATE_LCD_DB_6(TX_TIME);
+                ANNOTATE_LCD_DB_7(TX_TIME);
+                ANNOTATE_LCD_E(TX_TIME);
+                ANNOTATE_LCD_RS(TX_TIME);
+                ANNOTATE_LCD_RW(TX_TIME);
+                ANNOTATE_init_done_o(TX_TIME);
+                ANNOTATE_writeDataDone_o(TX_TIME);
+                WAIT for 9 us;
+                TX_TIME := TX_TIME + 9;
+            END LOOP ANNO_LOOP;
+        END PROCESS;
+
+        PROCESS
+            BEGIN
+                -- -------------  Current Time:  139us
+                WAIT FOR 139 us;
+                ENABLE <= '1';
+                -- -------------------------------------
+                -- -------------  Current Time:  199us
+                WAIT FOR 60 us;
+                RESET <= '1';
+                -- -------------------------------------
+                -- -------------  Current Time:  219us
+                WAIT FOR 20 us;
+                RESET <= '0';
+                -- -------------------------------------
+                WAIT FOR 9801 us;
+
+                STD.TEXTIO.write(TX_OUT, string'("Total[]"));
+                STD.TEXTIO.writeline(RESULTS, TX_OUT);
+                ASSERT (FALSE) REPORT
+                    "Success! Simulation for annotation completed"
+                    SEVERITY FAILURE;
+            END PROCESS;
+
+    END testbench_arch;
+

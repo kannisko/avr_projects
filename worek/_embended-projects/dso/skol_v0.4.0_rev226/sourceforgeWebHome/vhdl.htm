@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+	<title>SK&Aring;L - FPGA based Oscilloscope with universal Java Oscilloscope GUI.</title>
+</head>
+<body>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://apps.sourceforge.net/piwik/skol/" : "http://apps.sourceforge.net/piwik/skol/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+piwik_action_name = '';
+piwik_idsite = 1;
+piwik_url = pkBaseURL + "piwik.php";
+piwik_log(piwik_action_name, piwik_idsite, piwik_url);
+</script>
+<object><noscript><p><img src="http://apps.sourceforge.net/piwik/skol/piwik.php?idsite=1" alt="piwik"/></p></noscript></object>
+<!-- End Piwik Tag -->
+<center>
+<h1>SK&Aring;L</h1>
+<h2>FPGA Based Oscilloscope</h2>
+
+</center>
+
+
+<!-- -------------------------------------------------------------------------------- -->
+<h2>VHDL Model</h2>
+<center>
+
+<a href = "pics/BlockDiagram.jpg" target="mainFrame"><img src="pics/BlockDiagram-small.jpg"></a>
+<img src="pics/vhdlmodeltree.jpg"><br>	
+</center><br>
+The LCD Byte Driver is responsible for initializing the LCD Display on the Spartan3A Board and for Displaying Data on it. <br>
+SkolUart sends and receives Data over the Serial Connection.<br>
+SPI Initializer is responsible to set up the Preamplifier on the Spartan3A <br>
+The ADC Controller captures the ADC Data Board which is located in front of the ADC<br>
+The AdcRam stores the captured Data from the ADC.<br>
+<br>
+The First Top Level FSM is responsible to start the ADC_Fsm.<br>
+The ADC_Fsm aquires Data and has included all Functionality to
+<ul>
+	<li>Aquire a whole Data Frame and store it into RAM</li>
+	<li>Trigger Functionality</li>
+	<li>Sending Data back to Host</li>
+	<li>Makes correct TimeDomain (TimePerDiv - by dropping aquired data values.) </li>
+</ul>
+<!-- -------------------------------------------------------------------------------- -->
+<h2> Protocol </h2>
+Message Length : n (min: 7, max: 65541)
+
+<table border="1">
+  <tr>
+    <th><code>0</code></th>
+    <th><code>1</code></th>
+    <th><code>2</code></th>
+    <th><code>3</code></th>
+    <th><code>4</code></th>
+	<th><code>(5 ... n-2)</code></th>
+    <th><code>n-1</code></th>
+  </tr>
+  <tr>
+    <th><code>OpCode</code></th>
+    <th><code>MagicByte</code></th>
+    <th><code>DataBlockCount HighByte</code></th>
+    <th><code>DataBlockCount LowByte</code></th>
+    <th><code>DataBlockSize (Number of Bytes)</code></th>
+	<th><code>Data</code></th>
+    <th><code>CRC</code></th>
+  </tr>
+  <tr>
+    <th><code>1 Byte</code></th>
+    <th><code>1 Byte</code></th>
+    <th><code>1 Byte</code></th>
+    <th><code>1 Byte</code></th>
+    <th><code>1 Byte</code></th>
+    <th><code>0 to 65535 Bytes</code></th>
+    <th><code>1 Byte</code></th>
+  </tr>
+</table>
+<br><br>
+Example Message
+<table border="1">
+  <tr>
+    <th><code>BE</code></th>
+    <th><code>EF</code></th>
+    <th><code>00</code></th>
+    <th><code>03</code></th>
+    <th><code>02</code></th>
+	<th><code>00 01</code></th>
+	<th><code>00 02</code></th>
+	<th><code>00 03</code></th>
+    <th><code>ff</code></th>
+  </tr>
+  <tr>
+    <th><code>OpCode</code></th>
+    <th><code>MagicByte</code></th>
+    <th><code>DataBlockCount HighByte</code></th>
+    <th><code>DataBlockCount LowByte</code></th>
+    <th><code>DataBlockSize (Number of Bytes)</code></th>
+	<th colspan="3"><code>Data</code></th>
+    <th><code>CRC</code></th>
+  </tr>
+  <tr>
+    <th><code>1 Byte</code></th>
+    <th><code>1 Byte</code></th>
+    <th><code>1 Byte</code></th>
+    <th><code>1 Byte</code></th>
+    <th><code>1 Byte</code></th>
+    <TH colspan="3"><code>0 to 65535 Bytes</code></th>
+    <th><code>1 Byte</code></th>
+  </tr>
+</table>
+
+<br>
+Has 3 Data Packets, with each size of 2bytes.	<br><a href = "opCodes.htm" target="mainFrame"><b>OpCodes</b> as JavaDoc</a><br>
+MagicByte is to determine correct MessageStart(in combination with opCode Range and DataBlockSize, which must be less than 4.)<br>
+DataBlockCount: Number of Blocks of Size DataBlockSize (Size 1 = 1 Byte, Size 2 = 2 bytes) in the Data Block.<br>
+CRC is for future usage<br><br>
+
+<!-- -------------------------------------------------------------------------------- -->
+<h2>Protocol Requirements for FPGA Impl</h2>
+Because the static HW Protocol Implementation of the Receiver, a fixed size of 7 data Bytes is needed. This means that always exact one data byte has to be sent to the FPGA. Even when the data Byte is useless. 
+
+<!-- -------------------------------------------------------------------------------- -->
+<h2>Serial Port Settings</h2>	
+
+Baud Rate 115200<br>
+8 data Bits<br>
+1 stop Bit<br>
+No Flow Control<br>
+
+<!-- -------------------------------------------------------------------------------- -->
+<h2>Fpga Settings</h2>	
+Current only the 50MHz Clock is used, and also most of the libraries are specialized for this Frequency.
+<!-- -------------------------------------------------------------------------------- -->
+<h2>Used Libraries</h2>
+<h3><a href = "http://www.opencores.org/projects.cgi/web/miniuart2/overview" target="_blank">MiniUart</a></h3>
+Used for Serial RS232 Communication.<br>
+
+<!-- -------------------------------------------------------------------------------- -->
+<h2>Toolchain</h2>	
+Xilinx ISE 9.2i <br>
+
+
+</body>
+</html>

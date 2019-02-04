@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Atmel Studio Solution File, Format Version 11.00
+Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "lcd", "lcd\lcd.cppproj", "{976302FE-45B7-4472-AC76-14A5B07DB90B}"
+EndProject
+Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "tiny13", "tiny13\tiny13.cppproj", "{7CE322F7-A85E-4692-90B0-3741C3FB4666}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AVR = Debug|AVR
+		Release|AVR = Release|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{976302FE-45B7-4472-AC76-14A5B07DB90B}.Debug|AVR.ActiveCfg = Debug|AVR
+		{976302FE-45B7-4472-AC76-14A5B07DB90B}.Debug|AVR.Build.0 = Debug|AVR
+		{976302FE-45B7-4472-AC76-14A5B07DB90B}.Release|AVR.ActiveCfg = Release|AVR
+		{976302FE-45B7-4472-AC76-14A5B07DB90B}.Release|AVR.Build.0 = Release|AVR
+		{7CE322F7-A85E-4692-90B0-3741C3FB4666}.Debug|AVR.ActiveCfg = Debug|AVR
+		{7CE322F7-A85E-4692-90B0-3741C3FB4666}.Debug|AVR.Build.0 = Debug|AVR
+		{7CE322F7-A85E-4692-90B0-3741C3FB4666}.Release|AVR.ActiveCfg = Release|AVR
+		{7CE322F7-A85E-4692-90B0-3741C3FB4666}.Release|AVR.Build.0 = Release|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

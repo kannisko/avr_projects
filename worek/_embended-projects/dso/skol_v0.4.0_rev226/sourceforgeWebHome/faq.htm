@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+	<title>SK&Aring;L - FPGA based Oscilloscope with universal Java Oscilloscope GUI.</title>
+</head>
+<body>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://apps.sourceforge.net/piwik/skol/" : "http://apps.sourceforge.net/piwik/skol/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+piwik_action_name = '';
+piwik_idsite = 1;
+piwik_url = pkBaseURL + "piwik.php";
+piwik_log(piwik_action_name, piwik_idsite, piwik_url);
+</script>
+<object><noscript><p><img src="http://apps.sourceforge.net/piwik/skol/piwik.php?idsite=1" alt="piwik"/></p></noscript></object>
+<!-- End Piwik Tag -->
+<center>
+<h1>SK&Aring;L</h1>
+<h2>FAQ : FPGA Based Oscilloscope with Java GUI</h2>
+
+</center>
+<!-- -------------------------------------------------------------------------------- -->
+<h2>FAQ</h2>
+<ol>
+<li><a href="#faq000_MacOsX">MacOsX</a></li>
+	<ol>
+		<li><a href="#faq001_MacOsX">The MacOsX Applications dont start</a></li>
+		<li><a href="#faq002_MacOsX">Problems like, all COM ports are in use, and get never released</a></li>
+	</ol>
+<li><a href="#faq000_Windows">Windows</a></li>
+	<ol>
+		<li><a href="#faq001_Windows">Serial Port Access does not work anymore(After Java update)</a></li>
+	</ol>
+</ol>
+
+
+<a name="faq000_MacOsX"><h2>MacOsX</h2></a>
+	<a name="faq001_MacOsX"><h3>The MacOsX Applications dont start</h3></a>
+	If the Programm does not start, maybe the executable flag is not set on<br>  
+	&quot;MacOsX&#47SkolController.app&#47Contents&#47MacOSJavaApplicationStub&quot; The same for OsciDummy<br>
+	<b>Solution: </b><br>
+	You can use &quot;MacOsX&#47fixPermissions.sh (if permissions are set here correct :), otherwise you can copy paste 
+		the code from within.
+
+	<a name="faq002_MacOsX"><h3>Problems like, all COM ports are in use, and get never released</h3></a>
+	<a href="http://mailman.qbang.org/pipermail/rxtx/Week-of-Mon-20060306/006521.html">Description 1 </a><br>
+	<a href="http://mailman.qbang.org/pipermail/rxtx/2007-November/2922601.html">Description 2 </a><br>
+	<b>Solution (for the brave - Warning - this will EVERYONE give write access to this directory): </b><br>
+		as super user run:<br>
+		<code>sudo su<br>
+		cd /var<br>
+		mkdir lock<br>
+		chown -R  root:uucp lock<br>
+		chmod g+w lock<br>
+		chmod o+w lock </code>
+<!-- -------------------------------------------------------------------------------- -->
+
+<a name="faq000_Windows"><h2>Windows</h2></a>
+	<a name="faq001_Windows"><h3>Serial Port Access does not work anymore(After Java update)</h3></a>
+	After Java update it may be there are new JRE Folders in the &quot;Program Files&quot; Path.<br>
+	<b>Solution: </b><br>
+	Copy the required Libraries into the new Folders. See usage page for details.
+	
+
+<!-- -------------------------------------------------------------------------------- -->
+
+</body>
+</html>

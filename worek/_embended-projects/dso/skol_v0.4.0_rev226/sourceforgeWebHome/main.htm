@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+	<title>SK&Aring;L - FPGA based Oscilloscope with universal Java Oscilloscope GUI.</title>
+</head>
+<body>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://apps.sourceforge.net/piwik/skol/" : "http://apps.sourceforge.net/piwik/skol/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+piwik_action_name = '';
+piwik_idsite = 1;
+piwik_url = pkBaseURL + "piwik.php";
+piwik_log(piwik_action_name, piwik_idsite, piwik_url);
+</script>
+<object><noscript><p><img src="http://apps.sourceforge.net/piwik/skol/piwik.php?idsite=1" alt="piwik"/></p></noscript></object>
+<!-- End Piwik Tag -->
+<center>
+<h1>SK&Aring;L</h1>
+
+<b>S</b>ushi’s <b>K</b>ick-Ass <b>O</b>scilloscope and <b>L</b>ogger<br>
+<h2>FPGA Based Oscilloscope with Java GUI</h2>
+
+<a href = "pics/OsciController.jpg" target="mainFrame"><img src="pics/OsciController-small.jpg"></a>
+<a href = "pics/Spartan.jpg" target="mainFrame"><img src="pics/Spartan-small.jpg"></a><br>	
+</center>
+<br>	
+This Project is intended to build a simple Oscilloscope Tool with a Java based GUI using a <a href = "http://www.xilinx.com/products/devkits/HW-SPAR3A-SK-UNI-G.htm" target="mainFrame">Spartan3A Starter Kit</a>.<br>
+The FPGA is considered to aquire and Trigger Data from the onboard ADC, and send it to the Host Application.<br>
+Also a Simulator (<a href = "pics/OsciDummy.jpg" target="mainFrame">OsciDummy</a>) is programmed, to test and debug the Controller easily.<br><br>
+Features so far:
+	<ul>
+		<li>Aquires 152 Data Points per PictureFrame with a Sampling Rate of 1,5 MSamples per sec. (Fastest that onboard ADC can.)</li>
+		<li>Resolution can be changed (152,152*5 152*10 DataPoints). A maximum Resolution of 1k5 Samples is implemented now(limited by FPGA Size)</li>
+		<li>2 Channels.</li>
+		<li>Maximal Voltage Range of the Starter Board ADC Input: 400mV to 2900mV</li>
+		<li>Trigger at a specific Level</li>
+		<li>Trigger at positive edge or negative edge.</li>
+		<li>Different TimeDomains (TimePerDiv from 10us per Div to 50ms per Div).</li>
+		<li>Serial RS232 Communication at a BaudRate of 115200.</li>
+		<li>FPGA runs in polling mode. The Controller Gui requests every Data Frame seperately.</li>
+		<li>Single DataAquisition - one Voltage Value</li>
+		<li>Settings will be tested after sending to Device.</li>	
+		<li>X & Y Axis Offset adjustable in Controller for each Channel</li>
+	</ul>
+
+
+<h2>NEWS:</h2>
+<h3>2008 12 09</h3>
+	(skol_v0.4.0_rev226.zip) released.<br>
+	Adjustable BufferSize<br>
+	Offset per Channel<br>
+	Look at 
+	 <a href = "changelog.htm" target="mainFrame">ChangeLog</a> and 
+	 <a href = "releasenotes.htm" target="mainFrame">ReleaseNotes</a>.<br>
+	.<br>
+<h3>2008 12 03</h3>
+	(skol_v0.3.1_rev179.zip) released.<br>
+	Fixed broken OsciDummy<br>
+	Homepage Docu update (Usage, FAQ)<br>
+<h3>2008 12 02</h3>
+	(skol_v0.3.0_rev174.zip) released.<br>
+	Both Channels Working now<br>
+<h3>2008 12 01</h3>
+	Known Issue (OS X App wont start) in skol_v0.2.2_rev115.zip new in <a href = "releasenotes.htm" target="mainFrame">ReleaseNotes (Known Issues)</a>.<br>
+<h3>2008 11 16</h3>
+	(skol_v0.2.2_rev115.zip) released.<br>
+	(Fixes and small Improvements)<br>
+<h3>2008 11 12</h3>
+	(skol_v0.2.1_rev77.zip) released.<br>
+	(Java Gui Fixes and Improvements)<br><br>
+<h3>2008 11 09</h3>
+	(skol v0.2.0 rev63.zip) released.<br>
+	(TimePerDiv, Trigger, ...)<br><br>
+<h3>2008 11 06</h3>
+	Initial prototype (skol v0.1.0 rev19.zip) released.<br>
+.<br>
+</body>
+</html>

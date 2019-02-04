@@ -1,0 +1,49 @@
+<html>
+<body>
+<pre>
+<h1>Erstellungsprotokoll</h1>
+<h3>
+--------------------Konfiguration: inpout32drv - Win32 Release--------------------
+</h3>
+<h3>Befehlszeilen</h3>
+Creating command line "rc.exe /l 0x409 /fo"Release/inpout32drv.res" /d "NDEBUG" "C:\Dokumente und Einstellungen\hoffmanh\Desktop\Jnpout32_v10\MACS_Jnpout32_dll_source\inpout32drv.rc"" 
+Erstellen der temporären Datei  "C:\DOKUME~1\hoffmanh\LOKALE~1\Temp\RSP1116.tmp" mit Inhalten
+[
+/nologo /MT /W3 /GX /O2 /I "C:\j2sdk1.4.2\include" /I "C:\j2sdk1.4.2\include\win32" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "INPOUT32DRV_EXPORTS" /Fp"Release/inpout32drv.pch" /Yu"stdafx.h" /Fo"Release/" /Fd"Release/" /FD /c 
+"C:\Dokumente und Einstellungen\hoffmanh\Desktop\Jnpout32_v10\MACS_Jnpout32_dll_source\inpout32drv.cpp"
+"C:\Dokumente und Einstellungen\hoffmanh\Desktop\Jnpout32_v10\MACS_Jnpout32_dll_source\osversion.cpp"
+]
+Creating command line "cl.exe @C:\DOKUME~1\hoffmanh\LOKALE~1\Temp\RSP1116.tmp" 
+Erstellen der temporären Datei  "C:\DOKUME~1\hoffmanh\LOKALE~1\Temp\RSP1117.tmp" mit Inhalten
+[
+/nologo /MT /W3 /GX /O2 /I "C:\j2sdk1.4.2\include" /I "C:\j2sdk1.4.2\include\win32" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "INPOUT32DRV_EXPORTS" /Fp"Release/inpout32drv.pch" /Yc"stdafx.h" /Fo"Release/" /Fd"Release/" /FD /c 
+"C:\Dokumente und Einstellungen\hoffmanh\Desktop\Jnpout32_v10\MACS_Jnpout32_dll_source\StdAfx.cpp"
+]
+Creating command line "cl.exe @C:\DOKUME~1\hoffmanh\LOKALE~1\Temp\RSP1117.tmp" 
+Erstellen der temporären Datei  "C:\DOKUME~1\hoffmanh\LOKALE~1\Temp\RSP1118.tmp" mit Inhalten
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /incremental:no /pdb:"Release/Jnpout32.pdb" /machine:I386 /def:".\inpout32drv.def" /out:"c:\Windows\System32\Jnpout32.dll" /implib:"Release/Jnpout32.lib" 
+".\Release\inpout32drv.obj"
+".\Release\osversion.obj"
+".\Release\StdAfx.obj"
+".\Release\inpout32drv.res"
+]
+Erstellen der Befehlzeile "link.exe @C:\DOKUME~1\hoffmanh\LOKALE~1\Temp\RSP1118.tmp"
+<h3>Ausgabefenster</h3>
+Ressourcen werden kompiliert...
+Kompilierung läuft...
+StdAfx.cpp
+Kompilierung läuft...
+inpout32drv.cpp
+osversion.cpp
+Generieren von Code...
+Linker-Vorgang läuft...
+   Bibliothek Release/Jnpout32.lib und Objekt Release/Jnpout32.exp wird erstellt
+
+
+
+<h3>Ergebnisse</h3>
+Jnpout32.dll - 0 Fehler, 0 Warnung(en)
+</pre>
+</body>
+</html>

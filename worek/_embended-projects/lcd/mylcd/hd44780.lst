@@ -1,0 +1,803 @@
+   1               		.file	"hd44780.c"
+   2               	__SREG__ = 0x3f
+   3               	__SP_H__ = 0x3e
+   4               	__SP_L__ = 0x3d
+   5               	__CCP__ = 0x34
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  10               		.text
+  11               	.Ltext0:
+  12               		.cfi_sections	.debug_frame
+  13               	.global	_LCD_OutNibble
+  15               	_LCD_OutNibble:
+  16               	.LFB6:
+  17               		.file 1 "hd44780.c"
+   1:hd44780.c     **** //-------------------------------------------------------------------------------------------------
+   2:hd44780.c     **** // Wyœwietlacz alfanumeryczny ze sterownikiem HD44780
+   3:hd44780.c     **** // Sterowanie w trybie 4-bitowym bez odczytu flagi zajêtoœci
+   4:hd44780.c     **** // z dowolnym przypisaniem sygna³ów steruj¹cych
+   5:hd44780.c     **** // Plik : HD44780.c	
+   6:hd44780.c     **** // Mikrokontroler : Atmel AVR
+   7:hd44780.c     **** // Kompilator : avr-gcc
+   8:hd44780.c     **** // Autor : Rados³aw Kwiecieñ
+   9:hd44780.c     **** // ród³o : http://radzio.dxp.pl/hd44780/
+  10:hd44780.c     **** // Data : 24.03.2007
+  11:hd44780.c     **** //-------------------------------------------------------------------------------------------------
+  12:hd44780.c     **** 
+  13:hd44780.c     **** #include "HD44780.h"
+  14:hd44780.c     **** //-------------------------------------------------------------------------------------------------
+  15:hd44780.c     **** //
+  16:hd44780.c     **** // Funkcja wystawiaj¹ca pó³bajt na magistralê danych
+  17:hd44780.c     **** //
+  18:hd44780.c     **** //-------------------------------------------------------------------------------------------------
+  19:hd44780.c     **** void _LCD_OutNibble(unsigned char nibbleToWrite)
+  20:hd44780.c     **** {
+  18               		.loc 1 20 0
+  19               		.cfi_startproc
+  20               	.LVL0:
+  21               	/* prologue: function */
+  22               	/* frame size = 0 */
+  23               	/* stack size = 0 */
+  24               	.L__stack_usage = 0
+  21:hd44780.c     **** if(nibbleToWrite & 0x01)
+  25               		.loc 1 21 0
+  26 0000 80FF      		sbrs r24,0
+  27 0002 00C0      		rjmp .L2
+  22:hd44780.c     **** 	LCD_DB4_PORT |= LCD_DB4;
+  28               		.loc 1 22 0
+  29 0004 739A      		sbi 46-32,3
+  30 0006 00C0      		rjmp .L3
+  31               	.L2:
+  23:hd44780.c     **** else
+  24:hd44780.c     **** 	LCD_DB4_PORT  &= ~LCD_DB4;
+  32               		.loc 1 24 0
+  33 0008 7398      		cbi 46-32,3
+  34               	.L3:
+  25:hd44780.c     **** 
+  26:hd44780.c     **** if(nibbleToWrite & 0x02)
+  35               		.loc 1 26 0
+  36 000a 81FF      		sbrs r24,1
+  37 000c 00C0      		rjmp .L4
+  27:hd44780.c     **** 	LCD_DB5_PORT |= LCD_DB5;
+  38               		.loc 1 27 0
+  39 000e A59A      		sbi 52-32,5
+  40 0010 00C0      		rjmp .L5
+  41               	.L4:
+  28:hd44780.c     **** else
+  29:hd44780.c     **** 	LCD_DB5_PORT  &= ~LCD_DB5;
+  42               		.loc 1 29 0
+  43 0012 A598      		cbi 52-32,5
+  44               	.L5:
+  30:hd44780.c     **** 
+  31:hd44780.c     **** if(nibbleToWrite & 0x04)
+  45               		.loc 1 31 0
+  46 0014 82FF      		sbrs r24,2
+  47 0016 00C0      		rjmp .L6
+  32:hd44780.c     **** 	LCD_DB6_PORT |= LCD_DB6;
+  48               		.loc 1 32 0
+  49 0018 759A      		sbi 46-32,5
+  50 001a 00C0      		rjmp .L7
+  51               	.L6:
+  33:hd44780.c     **** else
+  34:hd44780.c     **** 	LCD_DB6_PORT  &= ~LCD_DB6;
+  52               		.loc 1 34 0
+  53 001c 7598      		cbi 46-32,5
+  54               	.L7:
+  35:hd44780.c     **** 
+  36:hd44780.c     **** if(nibbleToWrite & 0x08)
+  55               		.loc 1 36 0
+  56 001e 83FF      		sbrs r24,3
+  57 0020 00C0      		rjmp .L8
+  58               	.LBB16:
+  59               	.LBB17:
+  37:hd44780.c     **** 	LCD_DB7_PORT |= LCD_DB7;
+  60               		.loc 1 37 0
+  61 0022 749A      		sbi 46-32,4
+  62 0024 0895      		ret
+  63               	.L8:
+  64               	.LBE17:
+  65               	.LBE16:
+  38:hd44780.c     **** else
+  39:hd44780.c     **** 	LCD_DB7_PORT  &= ~LCD_DB7;
+  66               		.loc 1 39 0
+  67 0026 7498      		cbi 46-32,4
+  68 0028 0895      		ret
+  69               		.cfi_endproc
+  70               	.LFE6:
+  72               	.global	_LCD_Write
+  74               	_LCD_Write:
+  75               	.LFB7:
+  40:hd44780.c     **** }
+  41:hd44780.c     **** //-------------------------------------------------------------------------------------------------
+  42:hd44780.c     **** //
+  43:hd44780.c     **** // Funkcja zapisu bajtu do wyœwietacza (bez rozró¿nienia instrukcja/dane).
+  44:hd44780.c     **** //
+  45:hd44780.c     **** //-------------------------------------------------------------------------------------------------
+  46:hd44780.c     **** void _LCD_Write(unsigned char dataToWrite)
+  47:hd44780.c     **** {
+  76               		.loc 1 47 0
+  77               		.cfi_startproc
+  78               	.LVL1:
+  79 002a CF93      		push r28
+  80               	.LCFI0:
+  81               		.cfi_def_cfa_offset 4
+  82               		.cfi_offset 28, -3
+  83               	/* prologue: function */
+  84               	/* frame size = 0 */
+  85               	/* stack size = 1 */
+  86               	.L__stack_usage = 1
+  87 002c C82F      		mov r28,r24
+  48:hd44780.c     **** LCD_E_PORT |= LCD_E;
+  88               		.loc 1 48 0
+  89 002e 2D9A      		sbi 37-32,5
+  49:hd44780.c     **** _LCD_OutNibble(dataToWrite >> 4);
+  90               		.loc 1 49 0
+  91 0030 8295      		swap r24
+  92               	.LVL2:
+  93 0032 8F70      		andi r24,lo8(15)
+  94 0034 0E94 0000 		call _LCD_OutNibble
+  50:hd44780.c     **** LCD_E_PORT &= ~LCD_E;
+  95               		.loc 1 50 0
+  96 0038 2D98      		cbi 37-32,5
+  51:hd44780.c     **** LCD_E_PORT |= LCD_E;
+  97               		.loc 1 51 0
+  98 003a 2D9A      		sbi 37-32,5
+  52:hd44780.c     **** _LCD_OutNibble(dataToWrite);
+  99               		.loc 1 52 0
+ 100 003c 8C2F      		mov r24,r28
+ 101 003e 0E94 0000 		call _LCD_OutNibble
+  53:hd44780.c     **** LCD_E_PORT &= ~LCD_E;
+ 102               		.loc 1 53 0
+ 103 0042 2D98      		cbi 37-32,5
+ 104               	.LVL3:
+ 105               	.LBB18:
+ 106               	.LBB19:
+ 107               		.file 2 "c:\\program files\\atmel\\avr tools\\avr toolchain\\bin\\../lib/gcc/avr/4.6.2/../../../..
+   1:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** /* Copyright (c) 2002, Marek Michalkiewicz
+   2:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    Copyright (c) 2004,2005,2007 Joerg Wunsch
+   3:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    Copyright (c) 2007  Florin-Viorel Petrov
+   4:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    All rights reserved.
+   5:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+   6:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    Redistribution and use in source and binary forms, with or without
+   7:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    modification, are permitted provided that the following conditions are met:
+   8:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+   9:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    * Redistributions of source code must retain the above copyright
+  10:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****      notice, this list of conditions and the following disclaimer.
+  11:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+  12:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    * Redistributions in binary form must reproduce the above copyright
+  13:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****      notice, this list of conditions and the following disclaimer in
+  14:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****      the documentation and/or other materials provided with the
+  15:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****      distribution.
+  16:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+  17:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    * Neither the name of the copyright holders nor the names of
+  18:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****      contributors may be used to endorse or promote products derived
+  19:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****      from this software without specific prior written permission.
+  20:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+  21:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  22:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****   AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  23:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****   IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  24:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****   ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+  25:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****   LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  26:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****   CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+  27:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****   SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  28:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****   INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  29:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****   CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  30:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  31:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****   POSSIBILITY OF SUCH DAMAGE. */
+  32:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+  33:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** /* $Id: delay.h.in 2251 2011-09-14 08:20:33Z joerg_wunsch $ */
+  34:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+  35:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** #ifndef _UTIL_DELAY_H_
+  36:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** #define _UTIL_DELAY_H_ 1
+  37:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+  38:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** #ifndef __HAS_DELAY_CYCLES
+  39:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** #define __HAS_DELAY_CYCLES 1
+  40:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** #endif
+  41:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+  42:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** #include <inttypes.h>
+  43:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** #include <util/delay_basic.h>
+  44:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** #include <math.h>
+  45:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+  46:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** /** \file */
+  47:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** /** \defgroup util_delay <util/delay.h>: Convenience functions for busy-wait delay loops
+  48:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****     \code
+  49:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****     #define F_CPU 1000000UL  // 1 MHz
+  50:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****     //#define F_CPU 14.7456E6
+  51:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****     #include <util/delay.h>
+  52:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****     \endcode
+  53:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+  54:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****     \note As an alternative method, it is possible to pass the
+  55:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****     F_CPU macro down to the compiler from the Makefile.
+  56:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****     Obviously, in that case, no \c \#define statement should be
+  57:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****     used.
+  58:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+  59:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****     The functions in this header file are wrappers around the basic
+  60:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****     busy-wait functions from <util/delay_basic.h>.  They are meant as
+  61:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****     convenience functions where actual time values can be specified
+  62:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****     rather than a number of cycles to wait for.  The idea behind is
+  63:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****     that compile-time constant expressions will be eliminated by
+  64:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****     compiler optimization so floating-point expressions can be used
+  65:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****     to calculate the number of delay cycles needed based on the CPU
+  66:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****     frequency passed by the macro F_CPU.
+  67:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+  68:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****     \note In order for these functions to work as intended, compiler
+  69:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****     optimizations <em>must</em> be enabled, and the delay time
+  70:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****     <em>must</em> be an expression that is a known constant at
+  71:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****     compile-time.  If these requirements are not met, the resulting
+  72:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****     delay will be much longer (and basically unpredictable), and
+  73:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****     applications that otherwise do not use floating-point calculations
+  74:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****     will experience severe code bloat by the floating-point library
+  75:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****     routines linked into the application.
+  76:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+  77:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****     The functions available allow the specification of microsecond, and
+  78:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****     millisecond delays directly, using the application-supplied macro
+  79:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****     F_CPU as the CPU clock frequency (in Hertz).
+  80:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+  81:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** */
+  82:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+  83:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** #if !defined(__DOXYGEN__)
+  84:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** static inline void _delay_us(double __us) __attribute__((always_inline));
+  85:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** static inline void _delay_ms(double __ms) __attribute__((always_inline));
+  86:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** #endif
+  87:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+  88:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** #ifndef F_CPU
+  89:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** /* prevent compiler error by supplying a default */
+  90:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** # warning "F_CPU not defined for <util/delay.h>"
+  91:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** # define F_CPU 1000000UL
+  92:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** #endif
+  93:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+  94:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** #ifndef __OPTIMIZE__
+  95:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** # warning "Compiler optimizations disabled; functions from <util/delay.h> won't work as designed"
+  96:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** #endif
+  97:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+  98:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** #if __HAS_DELAY_CYCLES && defined(__OPTIMIZE__) && \
+  99:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****   !defined(__DELAY_BACKWARD_COMPATIBLE__) &&	   \
+ 100:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****   __STDC_HOSTED__
+ 101:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** #  include <math.h>
+ 102:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** #endif
+ 103:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+ 104:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** /**
+ 105:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    \ingroup util_delay
+ 106:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+ 107:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    Perform a delay of \c __ms milliseconds, using _delay_loop_2().
+ 108:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+ 109:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    The macro F_CPU is supposed to be defined to a
+ 110:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    constant defining the CPU clock frequency (in Hertz).
+ 111:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+ 112:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    The maximal possible delay is 262.14 ms / F_CPU in MHz.
+ 113:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+ 114:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    When the user request delay which exceed the maximum possible one,
+ 115:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    _delay_ms() provides a decreased resolution functionality. In this
+ 116:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    mode _delay_ms() will work with a resolution of 1/10 ms, providing
+ 117:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    delays up to 6.5535 seconds (independent from CPU frequency).  The
+ 118:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    user will not be informed about decreased resolution.
+ 119:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+ 120:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    If the avr-gcc toolchain has __builtin_avr_delay_cycles(unsigned long)
+ 121:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    support, maximal possible delay is 4294967.295 ms/ F_CPU in MHz. For
+ 122:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    values greater than the maximal possible delay, overflows results in
+ 123:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    no delay i.e., 0ms.
+ 124:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+ 125:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    Conversion of __us into clock cycles may not always result in integer.
+ 126:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    By default, the clock cycles rounded up to next integer. This ensures that
+ 127:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    the user gets atleast __us microseconds of delay.
+ 128:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+ 129:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    Alternatively, user can define __DELAY_ROUND_DOWN__ and __DELAY_ROUND_CLOSEST__
+ 130:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    to round down and round to closest integer.
+ 131:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+ 132:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    Note: The new implementation of _delay_ms(double __ms) with 
+ 133:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****     __builtin_avr_delay_cycles(unsigned long) support is not backward compatible. 
+ 134:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    User can define __DELAY_BACKWARD_COMPATIBLE__ to get a backward compatible delay.
+ 135:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    Also, the backward compatible
+ 136:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    algorithm will be chosen if the code is compiled in a <em>freestanding
+ 137:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    environment</em> (GCC option \c -ffreestanding), as the math functions
+ 138:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    required for rounding are not available to the compiler then.
+ 139:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+ 140:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****  */
+ 141:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** void
+ 142:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** _delay_ms(double __ms)
+ 143:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** {
+ 144:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 	uint16_t __ticks;
+ 145:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 	double __tmp ; 
+ 146:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** #if __HAS_DELAY_CYCLES && defined(__OPTIMIZE__) && \
+ 147:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****   !defined(__DELAY_BACKWARD_COMPATIBLE__) &&	   \
+ 148:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****   __STDC_HOSTED__
+ 149:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 	uint32_t __ticks_dc;
+ 150:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 	extern void __builtin_avr_delay_cycles(unsigned long);
+ 151:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 	__tmp = ((F_CPU) / 1e3) * __ms;
+ 152:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+ 153:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 	#if defined(__DELAY_ROUND_DOWN__)
+ 154:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 		__ticks_dc = (uint32_t)fabs(__tmp);
+ 155:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+ 156:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 	#elif defined(__DELAY_ROUND_CLOSEST__)
+ 157:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 		__ticks_dc = (uint32_t)(fabs(__tmp)+0.5);
+ 158:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+ 159:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 	#else
+ 160:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 		//round up by default
+ 161:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+ 162:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 	#endif
+ 163:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+ 164:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 	__builtin_avr_delay_cycles(__ticks_dc);
+ 165:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+ 166:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** #else
+ 167:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 	__tmp = ((F_CPU) / 4e3) * __ms;
+ 168:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 	if (__tmp < 1.0)
+ 169:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 		__ticks = 1;
+ 170:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 	else if (__tmp > 65535)
+ 171:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 	{
+ 172:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 		//	__ticks = requested delay in 1/10 ms
+ 173:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 		__ticks = (uint16_t) (__ms * 10.0);
+ 174:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 		while(__ticks)
+ 175:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 		{
+ 176:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 			// wait 1/10 ms
+ 177:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 			_delay_loop_2(((F_CPU) / 4e3) / 10);
+ 178:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 			__ticks --;
+ 179:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 		}
+ 180:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 		return;
+ 181:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 	}
+ 182:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 	else
+ 183:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 		__ticks = (uint16_t)__tmp;
+ 184:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 	_delay_loop_2(__ticks);
+ 185:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** #endif
+ 186:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** }
+ 187:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+ 188:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** /**
+ 189:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    \ingroup util_delay
+ 190:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+ 191:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    Perform a delay of \c __us microseconds, using _delay_loop_1().
+ 192:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+ 193:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    The macro F_CPU is supposed to be defined to a
+ 194:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    constant defining the CPU clock frequency (in Hertz).
+ 195:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+ 196:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    The maximal possible delay is 768 us / F_CPU in MHz.
+ 197:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+ 198:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    If the user requests a delay greater than the maximal possible one,
+ 199:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    _delay_us() will automatically call _delay_ms() instead.  The user
+ 200:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    will not be informed about this case.
+ 201:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+ 202:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    If the avr-gcc toolchain has __builtin_avr_delay_cycles(unsigned long)
+ 203:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    support, maximal possible delay is 4294967.295 us/ F_CPU in MHz. For
+ 204:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    values greater than the maximal possible delay, overflow results in
+ 205:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    no delay i.e., 0us.
+ 206:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****   
+ 207:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    Conversion of __us into clock cycles may not always result in integer.
+ 208:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    By default, the clock cycles rounded up to next integer. This ensures that
+ 209:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    the user gets atleast __us microseconds of delay.
+ 210:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+ 211:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    Alternatively, user can define __DELAY_ROUND_DOWN__ and __DELAY_ROUND_CLOSEST__
+ 212:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    to round down and round to closest integer.
+ 213:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****  
+ 214:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    Note: The new implementation of _delay_us(double __us) with 
+ 215:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****     __builtin_avr_delay_cycles(unsigned long) support is not backward compatible.
+ 216:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    User can define __DELAY_BACKWARD_COMPATIBLE__ to get a backward compatible delay.
+ 217:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    Also, the backward compatible
+ 218:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    algorithm will be chosen if the code is compiled in a <em>freestanding
+ 219:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    environment</em> (GCC option \c -ffreestanding), as the math functions
+ 220:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****    required for rounding are not available to the compiler then.
+ 221:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+ 222:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****  */
+ 223:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** void
+ 224:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** _delay_us(double __us)
+ 225:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** {
+ 226:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 	uint8_t __ticks;
+ 227:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 	double __tmp ; 
+ 228:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** #if __HAS_DELAY_CYCLES && defined(__OPTIMIZE__) && \
+ 229:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****   !defined(__DELAY_BACKWARD_COMPATIBLE__) &&	   \
+ 230:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h ****   __STDC_HOSTED__
+ 231:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 	uint32_t __ticks_dc;
+ 232:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 	extern void __builtin_avr_delay_cycles(unsigned long);
+ 233:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 	__tmp = ((F_CPU) / 1e6) * __us;
+ 234:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+ 235:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 	#if defined(__DELAY_ROUND_DOWN__)
+ 236:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 		__ticks_dc = (uint32_t)fabs(__tmp);
+ 237:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+ 238:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 	#elif defined(__DELAY_ROUND_CLOSEST__)
+ 239:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 		__ticks_dc = (uint32_t)(fabs(__tmp)+0.5);
+ 240:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+ 241:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 	#else
+ 242:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 		//round up by default
+ 243:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+ 244:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 	#endif
+ 245:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 
+ 246:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 	__builtin_avr_delay_cycles(__ticks_dc);
+ 108               		.loc 2 246 0
+ 109 0044 87EC      		 ldi r24,lo8(199)
+ 110 0046 90E0      	    ldi r25,hi8(199)
+ 111 0048 0197      	    1:sbiw r24,1
+ 112 004a 01F4      	    brne 1b
+ 113 004c 00C0      		rjmp .
+ 114 004e 0000      		nop
+ 115               	/* epilogue start */
+ 116               	.LBE19:
+ 117               	.LBE18:
+  54:hd44780.c     **** _delay_us(50);
+  55:hd44780.c     **** }
+ 118               		.loc 1 55 0
+ 119 0050 CF91      		pop r28
+ 120               	.LVL4:
+ 121 0052 0895      		ret
+ 122               		.cfi_endproc
+ 123               	.LFE7:
+ 125               	.global	LCD_WriteCommand
+ 127               	LCD_WriteCommand:
+ 128               	.LFB8:
+  56:hd44780.c     **** //-------------------------------------------------------------------------------------------------
+  57:hd44780.c     **** //
+  58:hd44780.c     **** // Funkcja zapisu rozkazu do wyœwietlacza
+  59:hd44780.c     **** //
+  60:hd44780.c     **** //-------------------------------------------------------------------------------------------------
+  61:hd44780.c     **** void LCD_WriteCommand(unsigned char commandToWrite)
+  62:hd44780.c     **** {
+ 129               		.loc 1 62 0
+ 130               		.cfi_startproc
+ 131               	.LVL5:
+ 132               	/* prologue: function */
+ 133               	/* frame size = 0 */
+ 134               	/* stack size = 0 */
+ 135               	.L__stack_usage = 0
+  63:hd44780.c     **** LCD_RS_PORT &= ~LCD_RS;
+ 136               		.loc 1 63 0
+ 137 0054 2E98      		cbi 37-32,6
+  64:hd44780.c     **** _LCD_Write(commandToWrite);
+ 138               		.loc 1 64 0
+ 139 0056 0E94 0000 		call _LCD_Write
+ 140               	.LVL6:
+ 141               	/* epilogue start */
+  65:hd44780.c     **** }
+ 142               		.loc 1 65 0
+ 143 005a 0895      		ret
+ 144               		.cfi_endproc
+ 145               	.LFE8:
+ 147               	.global	LCD_WriteData
+ 149               	LCD_WriteData:
+ 150               	.LFB9:
+  66:hd44780.c     **** //-------------------------------------------------------------------------------------------------
+  67:hd44780.c     **** //
+  68:hd44780.c     **** // Funkcja zapisu danych do pamiêci wyœwietlacza
+  69:hd44780.c     **** //
+  70:hd44780.c     **** //-------------------------------------------------------------------------------------------------
+  71:hd44780.c     **** void LCD_WriteData(unsigned char dataToWrite)
+  72:hd44780.c     **** {
+ 151               		.loc 1 72 0
+ 152               		.cfi_startproc
+ 153               	.LVL7:
+ 154               	/* prologue: function */
+ 155               	/* frame size = 0 */
+ 156               	/* stack size = 0 */
+ 157               	.L__stack_usage = 0
+  73:hd44780.c     **** LCD_RS_PORT |= LCD_RS;
+ 158               		.loc 1 73 0
+ 159 005c 2E9A      		sbi 37-32,6
+  74:hd44780.c     **** _LCD_Write(dataToWrite);
+ 160               		.loc 1 74 0
+ 161 005e 0E94 0000 		call _LCD_Write
+ 162               	.LVL8:
+ 163               	/* epilogue start */
+  75:hd44780.c     **** }
+ 164               		.loc 1 75 0
+ 165 0062 0895      		ret
+ 166               		.cfi_endproc
+ 167               	.LFE9:
+ 169               	.global	LCD_WriteText
+ 171               	LCD_WriteText:
+ 172               	.LFB10:
+  76:hd44780.c     **** //-------------------------------------------------------------------------------------------------
+  77:hd44780.c     **** //
+  78:hd44780.c     **** // Funkcja wyœwietlenia napisu na wyswietlaczu.
+  79:hd44780.c     **** //
+  80:hd44780.c     **** //-------------------------------------------------------------------------------------------------
+  81:hd44780.c     **** void LCD_WriteText(char * text)
+  82:hd44780.c     **** {
+ 173               		.loc 1 82 0
+ 174               		.cfi_startproc
+ 175               	.LVL9:
+ 176 0064 CF93      		push r28
+ 177               	.LCFI1:
+ 178               		.cfi_def_cfa_offset 4
+ 179               		.cfi_offset 28, -3
+ 180 0066 DF93      		push r29
+ 181               	.LCFI2:
+ 182               		.cfi_def_cfa_offset 5
+ 183               		.cfi_offset 29, -4
+ 184               	/* prologue: function */
+ 185               	/* frame size = 0 */
+ 186               	/* stack size = 2 */
+ 187               	.L__stack_usage = 2
+ 188               		.loc 1 82 0
+ 189 0068 EC01      		movw r28,r24
+  83:hd44780.c     **** while(*text)
+ 190               		.loc 1 83 0
+ 191 006a 00C0      		rjmp .L14
+ 192               	.LVL10:
+ 193               	.L15:
+  84:hd44780.c     ****   LCD_WriteData(*text++);
+ 194               		.loc 1 84 0
+ 195 006c 0E94 0000 		call LCD_WriteData
+ 196               	.L14:
+  83:hd44780.c     **** while(*text)
+ 197               		.loc 1 83 0 discriminator 1
+ 198 0070 8991      		ld r24,Y+
+ 199 0072 8823      		tst r24
+ 200 0074 01F4      		brne .L15
+ 201               	/* epilogue start */
+  85:hd44780.c     **** }
+ 202               		.loc 1 85 0
+ 203 0076 DF91      		pop r29
+ 204 0078 CF91      		pop r28
+ 205 007a 0895      		ret
+ 206               		.cfi_endproc
+ 207               	.LFE10:
+ 209               	.global	LCD_GoTo
+ 211               	LCD_GoTo:
+ 212               	.LFB11:
+  86:hd44780.c     **** //-------------------------------------------------------------------------------------------------
+  87:hd44780.c     **** //
+  88:hd44780.c     **** // Funkcja ustawienia wspó³rzêdnych ekranowych
+  89:hd44780.c     **** //
+  90:hd44780.c     **** //-------------------------------------------------------------------------------------------------
+  91:hd44780.c     **** void LCD_GoTo(unsigned char x, unsigned char y)
+  92:hd44780.c     **** {
+ 213               		.loc 1 92 0
+ 214               		.cfi_startproc
+ 215               	.LVL11:
+ 216               	/* prologue: function */
+ 217               	/* frame size = 0 */
+ 218               	/* stack size = 0 */
+ 219               	.L__stack_usage = 0
+  93:hd44780.c     **** LCD_WriteCommand(HD44780_DDRAM_SET | (x + (0x40 * y)));
+ 220               		.loc 1 93 0
+ 221 007c 6295      		swap r22
+ 222               	.LVL12:
+ 223 007e 660F      		lsl r22
+ 224 0080 660F      		lsl r22
+ 225 0082 607C      		andi r22,lo8(-64)
+ 226 0084 680F      		add r22,r24
+ 227 0086 862F      		mov r24,r22
+ 228               	.LVL13:
+ 229 0088 8068      		ori r24,lo8(-128)
+ 230 008a 0E94 0000 		call LCD_WriteCommand
+ 231               	/* epilogue start */
+  94:hd44780.c     **** }
+ 232               		.loc 1 94 0
+ 233 008e 0895      		ret
+ 234               		.cfi_endproc
+ 235               	.LFE11:
+ 237               	.global	LCD_Clear
+ 239               	LCD_Clear:
+ 240               	.LFB12:
+  95:hd44780.c     **** //-------------------------------------------------------------------------------------------------
+  96:hd44780.c     **** //
+  97:hd44780.c     **** // Funkcja czyszczenia ekranu wyœwietlacza.
+  98:hd44780.c     **** //
+  99:hd44780.c     **** //-------------------------------------------------------------------------------------------------
+ 100:hd44780.c     **** void LCD_Clear(void)
+ 101:hd44780.c     **** {
+ 241               		.loc 1 101 0
+ 242               		.cfi_startproc
+ 243               	/* prologue: function */
+ 244               	/* frame size = 0 */
+ 245               	/* stack size = 0 */
+ 246               	.L__stack_usage = 0
+ 102:hd44780.c     **** LCD_WriteCommand(HD44780_CLEAR);
+ 247               		.loc 1 102 0
+ 248 0090 81E0      		ldi r24,lo8(1)
+ 249 0092 0E94 0000 		call LCD_WriteCommand
+ 250               	.LVL14:
+ 251               	.LBB20:
+ 252               	.LBB21:
+ 164:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 	__builtin_avr_delay_cycles(__ticks_dc);
+ 253               		.loc 2 164 0
+ 254 0096 8FE3      		 ldi r24,lo8(7999)
+ 255 0098 9FE1      	    ldi r25,hi8(7999)
+ 256 009a 0197      	    1:sbiw r24,1
+ 257 009c 01F4      	    brne 1b
+ 258 009e 00C0      		rjmp .
+ 259 00a0 0000      		nop
+ 260               	/* epilogue start */
+ 261               	.LBE21:
+ 262               	.LBE20:
+ 103:hd44780.c     **** _delay_ms(2);
+ 104:hd44780.c     **** }
+ 263               		.loc 1 104 0
+ 264 00a2 0895      		ret
+ 265               		.cfi_endproc
+ 266               	.LFE12:
+ 268               	.global	LCD_Home
+ 270               	LCD_Home:
+ 271               	.LFB13:
+ 105:hd44780.c     **** //-------------------------------------------------------------------------------------------------
+ 106:hd44780.c     **** //
+ 107:hd44780.c     **** // Funkcja przywrócenia pocz¹tkowych wspó³rzêdnych wyœwietlacza.
+ 108:hd44780.c     **** //
+ 109:hd44780.c     **** //-------------------------------------------------------------------------------------------------
+ 110:hd44780.c     **** void LCD_Home(void)
+ 111:hd44780.c     **** {
+ 272               		.loc 1 111 0
+ 273               		.cfi_startproc
+ 274               	/* prologue: function */
+ 275               	/* frame size = 0 */
+ 276               	/* stack size = 0 */
+ 277               	.L__stack_usage = 0
+ 112:hd44780.c     **** LCD_WriteCommand(HD44780_HOME);
+ 278               		.loc 1 112 0
+ 279 00a4 82E0      		ldi r24,lo8(2)
+ 280 00a6 0E94 0000 		call LCD_WriteCommand
+ 281               	.LVL15:
+ 282               	.LBB22:
+ 283               	.LBB23:
+ 164:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 	__builtin_avr_delay_cycles(__ticks_dc);
+ 284               		.loc 2 164 0
+ 285 00aa 8FE3      		 ldi r24,lo8(7999)
+ 286 00ac 9FE1      	    ldi r25,hi8(7999)
+ 287 00ae 0197      	    1:sbiw r24,1
+ 288 00b0 01F4      	    brne 1b
+ 289 00b2 00C0      		rjmp .
+ 290 00b4 0000      		nop
+ 291               	/* epilogue start */
+ 292               	.LBE23:
+ 293               	.LBE22:
+ 113:hd44780.c     **** _delay_ms(2);
+ 114:hd44780.c     **** }
+ 294               		.loc 1 114 0
+ 295 00b6 0895      		ret
+ 296               		.cfi_endproc
+ 297               	.LFE13:
+ 299               	.global	LCD_Initalize
+ 301               	LCD_Initalize:
+ 302               	.LFB14:
+ 115:hd44780.c     **** //-------------------------------------------------------------------------------------------------
+ 116:hd44780.c     **** //
+ 117:hd44780.c     **** // Procedura inicjalizacji kontrolera HD44780.
+ 118:hd44780.c     **** //
+ 119:hd44780.c     **** //-------------------------------------------------------------------------------------------------
+ 120:hd44780.c     **** void LCD_Initalize(void)
+ 121:hd44780.c     **** {
+ 303               		.loc 1 121 0
+ 304               		.cfi_startproc
+ 305 00b8 CF93      		push r28
+ 306               	.LCFI3:
+ 307               		.cfi_def_cfa_offset 4
+ 308               		.cfi_offset 28, -3
+ 309               	/* prologue: function */
+ 310               	/* frame size = 0 */
+ 311               	/* stack size = 1 */
+ 312               	.L__stack_usage = 1
+ 122:hd44780.c     **** unsigned char i;
+ 123:hd44780.c     **** LCD_DB4_DIR |= LCD_DB4; // Konfiguracja kierunku pracy wyprowadzeñ
+ 313               		.loc 1 123 0
+ 314 00ba 6B9A      		sbi 45-32,3
+ 124:hd44780.c     **** LCD_DB5_DIR |= LCD_DB5; //
+ 315               		.loc 1 124 0
+ 316 00bc 9D9A      		sbi 51-32,5
+ 125:hd44780.c     **** LCD_DB6_DIR |= LCD_DB6; //
+ 317               		.loc 1 125 0
+ 318 00be 6D9A      		sbi 45-32,5
+ 126:hd44780.c     **** LCD_DB7_DIR |= LCD_DB7; //
+ 319               		.loc 1 126 0
+ 320 00c0 6C9A      		sbi 45-32,4
+ 127:hd44780.c     **** LCD_E_DIR 	|= LCD_E;   //
+ 321               		.loc 1 127 0
+ 322 00c2 259A      		sbi 36-32,5
+ 128:hd44780.c     **** LCD_RS_DIR 	|= LCD_RS;  //
+ 323               		.loc 1 128 0
+ 324 00c4 269A      		sbi 36-32,6
+ 325               	.LVL16:
+ 326               	.LBB24:
+ 327               	.LBB25:
+ 164:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 	__builtin_avr_delay_cycles(__ticks_dc);
+ 328               		.loc 2 164 0
+ 329 00c6 8FE5      		 ldi r24,lo8(-5537)
+ 330 00c8 9AEE      	    ldi r25,hi8(-5537)
+ 331 00ca 0197      	    1:sbiw r24,1
+ 332 00cc 01F4      	    brne 1b
+ 333 00ce 00C0      		rjmp .
+ 334 00d0 0000      		nop
+ 335               	.LBE25:
+ 336               	.LBE24:
+ 129:hd44780.c     **** _delay_ms(15); // oczekiwanie na ustalibizowanie siê napiecia zasilajacego
+ 130:hd44780.c     **** LCD_RS_PORT &= ~LCD_RS; // wyzerowanie linii RS
+ 337               		.loc 1 130 0
+ 338 00d2 2E98      		cbi 37-32,6
+ 131:hd44780.c     **** LCD_E_PORT &= ~LCD_E;  // wyzerowanie linii E
+ 339               		.loc 1 131 0
+ 340 00d4 2D98      		cbi 37-32,5
+ 341               	.LVL17:
+ 342 00d6 C3E0      		ldi r28,lo8(3)
+ 343               	.LVL18:
+ 344               	.L20:
+ 132:hd44780.c     **** 
+ 133:hd44780.c     **** for(i = 0; i < 3; i++) // trzykrotne powtórzenie bloku instrukcji
+ 134:hd44780.c     ****   {
+ 135:hd44780.c     ****   LCD_E_PORT |= LCD_E; //  E = 1
+ 345               		.loc 1 135 0 discriminator 2
+ 346 00d8 2D9A      		sbi 37-32,5
+ 136:hd44780.c     ****   _LCD_OutNibble(0x03); // tryb 8-bitowy
+ 347               		.loc 1 136 0 discriminator 2
+ 348 00da 83E0      		ldi r24,lo8(3)
+ 349 00dc 0E94 0000 		call _LCD_OutNibble
+ 137:hd44780.c     ****   LCD_E_PORT &= ~LCD_E; // E = 0
+ 350               		.loc 1 137 0 discriminator 2
+ 351 00e0 2D98      		cbi 37-32,5
+ 352               	.LVL19:
+ 353               	.LBB26:
+ 354               	.LBB27:
+ 164:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 	__builtin_avr_delay_cycles(__ticks_dc);
+ 355               		.loc 2 164 0 discriminator 2
+ 356 00e2 8FE1      		 ldi r24,lo8(19999)
+ 357 00e4 9EE4      	    ldi r25,hi8(19999)
+ 358 00e6 0197      	    1:sbiw r24,1
+ 359 00e8 01F4      	    brne 1b
+ 360 00ea 00C0      		rjmp .
+ 361 00ec 0000      		nop
+ 362 00ee C150      		subi r28,lo8(-(-1))
+ 363               	.LBE27:
+ 364               	.LBE26:
+ 133:hd44780.c     **** for(i = 0; i < 3; i++) // trzykrotne powtórzenie bloku instrukcji
+ 365               		.loc 1 133 0 discriminator 2
+ 366 00f0 01F4      		brne .L20
+ 138:hd44780.c     ****   _delay_ms(5); // czekaj 5ms
+ 139:hd44780.c     ****   }
+ 140:hd44780.c     **** 
+ 141:hd44780.c     **** LCD_E_PORT |= LCD_E; // E = 1
+ 367               		.loc 1 141 0
+ 368 00f2 2D9A      		sbi 37-32,5
+ 142:hd44780.c     **** _LCD_OutNibble(0x02); // tryb 4-bitowy
+ 369               		.loc 1 142 0
+ 370 00f4 82E0      		ldi r24,lo8(2)
+ 371 00f6 0E94 0000 		call _LCD_OutNibble
+ 143:hd44780.c     **** LCD_E_PORT &= ~LCD_E; // E = 0
+ 372               		.loc 1 143 0
+ 373 00fa 2D98      		cbi 37-32,5
+ 374               	.LVL20:
+ 375               	.LBB28:
+ 376               	.LBB29:
+ 164:c:\program files\atmel\avr tools\avr toolchain\bin\../lib/gcc/avr/4.6.2/../../../../avr/include/util\delay.h **** 	__builtin_avr_delay_cycles(__ticks_dc);
+ 377               		.loc 2 164 0
+ 378 00fc 8FE9      		 ldi r24,lo8(3999)
+ 379 00fe 9FE0      	    ldi r25,hi8(3999)
+ 380 0100 0197      	    1:sbiw r24,1
+ 381 0102 01F4      	    brne 1b
+ 382 0104 00C0      		rjmp .
+ 383 0106 0000      		nop
+ 384               	/* epilogue start */
+ 385               	.LBE29:
+ 386               	.LBE28:
+ 144:hd44780.c     **** 
+ 145:hd44780.c     **** _delay_ms(1); // czekaj 1ms 
+ 146:hd44780.c     **** 
+ 147:hd44780.c     **** //LCD_WriteCommand(HD44780_FUNCTION_SET | HD44780_FONT5x7 | HD44780_TWO_LINE | HD44780_4_BIT); // i
+ 148:hd44780.c     **** //LCD_WriteCommand(HD44780_DISPLAY_ONOFF | HD44780_DISPLAY_OFF); // wy³¹czenie wyswietlacza
+ 149:hd44780.c     **** //LCD_WriteCommand(HD44780_CLEAR); // czyszczenie zawartosæi pamieci DDRAM
+ 150:hd44780.c     **** //_delay_ms(2);
+ 151:hd44780.c     **** //LCD_WriteCommand(HD44780_ENTRY_MODE | HD44780_EM_SHIFT_CURSOR | HD44780_EM_INCREMENT);// inkremen
+ 152:hd44780.c     **** //LCD_WriteCommand(HD44780_DISPLAY_ONOFF | HD44780_DISPLAY_ON | HD44780_CURSOR_OFF | HD44780_CURSOR
+ 153:hd44780.c     **** }
+ 387               		.loc 1 153 0
+ 388 0108 CF91      		pop r28
+ 389 010a 0895      		ret
+ 390               		.cfi_endproc
+ 391               	.LFE14:
+ 393               	.Letext0:
+ 394               		.file 3 "c:\\program files\\atmel\\avr tools\\avr toolchain\\bin\\../lib/gcc/avr/4.6.2/../../../..
+DEFINED SYMBOLS
+                            *ABS*:00000000 hd44780.c
+C:\DOCUME~1\pawel\USTAWI~1\Temp\ccd0LNZX.s:2      *ABS*:0000003f __SREG__
+C:\DOCUME~1\pawel\USTAWI~1\Temp\ccd0LNZX.s:3      *ABS*:0000003e __SP_H__
+C:\DOCUME~1\pawel\USTAWI~1\Temp\ccd0LNZX.s:4      *ABS*:0000003d __SP_L__
+C:\DOCUME~1\pawel\USTAWI~1\Temp\ccd0LNZX.s:5      *ABS*:00000034 __CCP__
+C:\DOCUME~1\pawel\USTAWI~1\Temp\ccd0LNZX.s:6      *ABS*:00000000 __tmp_reg__
+C:\DOCUME~1\pawel\USTAWI~1\Temp\ccd0LNZX.s:7      *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\pawel\USTAWI~1\Temp\ccd0LNZX.s:15     .text:00000000 _LCD_OutNibble
+C:\DOCUME~1\pawel\USTAWI~1\Temp\ccd0LNZX.s:74     .text:0000002a _LCD_Write
+C:\DOCUME~1\pawel\USTAWI~1\Temp\ccd0LNZX.s:127    .text:00000054 LCD_WriteCommand
+C:\DOCUME~1\pawel\USTAWI~1\Temp\ccd0LNZX.s:149    .text:0000005c LCD_WriteData
+C:\DOCUME~1\pawel\USTAWI~1\Temp\ccd0LNZX.s:171    .text:00000064 LCD_WriteText
+C:\DOCUME~1\pawel\USTAWI~1\Temp\ccd0LNZX.s:211    .text:0000007c LCD_GoTo
+C:\DOCUME~1\pawel\USTAWI~1\Temp\ccd0LNZX.s:239    .text:00000090 LCD_Clear
+C:\DOCUME~1\pawel\USTAWI~1\Temp\ccd0LNZX.s:270    .text:000000a4 LCD_Home
+C:\DOCUME~1\pawel\USTAWI~1\Temp\ccd0LNZX.s:301    .text:000000b8 LCD_Initalize
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss

@@ -1,0 +1,3 @@
+MODULE testbench
+SUBMODULE lcd_byte_driver
+INSTANCE UUT

@@ -1,0 +1,95 @@
+u<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+	<title>SK&Aring;L - FPGA based Oscilloscope with universal Java Oscilloscope GUI.</title>
+</head>
+<body>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://apps.sourceforge.net/piwik/skol/" : "http://apps.sourceforge.net/piwik/skol/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+piwik_action_name = '';
+piwik_idsite = 1;
+piwik_url = pkBaseURL + "piwik.php";
+piwik_log(piwik_action_name, piwik_idsite, piwik_url);
+</script>
+<object><noscript><p><img src="http://apps.sourceforge.net/piwik/skol/piwik.php?idsite=1" alt="piwik"/></p></noscript></object>
+<!-- End Piwik Tag -->
+<center>
+<h1>SK&Aring;L</h1>
+
+<h2>Changelog</h2>
+</center>
+
+<h3>skol_v0.4.0</h3>
+
+	<ul>
+		<li>Resolution can be changed (152,152*5 152*10 DataPoints). A maximum Resolution of 1k5 Samples is implemented now(limited by FPGA Size)</li>
+		<li>Trigger can be turned on and off on the fly</li>
+		<li>X & Y Axis Offset adjustable in Controller for each Channel</li>
+		<li>Added Linux Starter for Controller</li>
+		<li>Optimized Controller Speed with a Profiler. The Bottleneck is the Serial Port itself, and on there the RXTX Library is the slow part. (Allows only a max of 50 Percent of the LineSpeed.)</li>
+			<ul>
+				<li>linespeed : 115200 bits per seconds = about 14 kBytes per Second</li>
+				<li>7 byte Datapackage Roundtrip 1000 times test : Effective Speed : 7 kBytes per Second</li>
+				<li>158 bytes Datapackage Roundtrip 100 times test : Effective Speed : 5,8 kBytes per Second</li>
+				<li>1526 bytes Datapackage Roundtrip 100 times test : Effective Speed : 5,77 kBytes per Second</li>
+				<li>The next Tests included Message parsing, dispatching, calculating and displaying (the normal workflow)</li>
+				<li>Very Surprising - there were really no real differences to the Roundtrip tests. So the Java Impl itself is not that slow for this Application with this connectiontype.</li>
+				<li>( k means 1000 here )</li>
+			</ul>
+		<li>Reset Command resets now all values to default values.</li>
+		<li>OpCodes changed</li>
+		<li>CycleCounter for SingleAdcOperation implemented, can be used to calc this for attaching a serial interfaced adc from now on.</li>
+		<li>Version Information is printed on startup of the Controller.</li>
+	</ul>
+
+<!-- ----------------------------------------------------------------------------------------------------------------------->
+
+<h3>skol_v0.3.1</h3>
+
+	<ul>
+		<li>Fixed OsciDummy</li>
+	</ul>
+
+<!-- ----------------------------------------------------------------------------------------------------------------------->
+<h3>skol_v0.2.2</h3>
+
+	<ul>
+		<li>Added Fpga Bit File Installer Batch File (Folder build/FPGA). So the FPGA can be programmed without opening ISE</li>
+		<li>TimeDivider Functionality is now avaiable for all DataAquisition Methods</li>
+		<li>Settings will be tested after sending to Device</li>
+	</ul>
+
+<!-- ----------------------------------------------------------------------------------------------------------------------->
+<h3>skol_v0.2.1</h3>
+
+	<ul>
+		<li>Controller: Added FileReader and FileWriter </li>
+		<li>Controller: Removed polled reading of serial port. Reduces CPU Usage.</li>
+		<li>Controller: Data Processing is now ThreadSafe and faster: 33 Hz (max DataFrameRate from FPGA: 44Hz)</li>
+	</ul>
+
+<!-- ----------------------------------------------------------------------------------------------------------------------->
+<h3>skol_v0.2.0 </h3>
+
+	<ul>
+		<li>Changed FlowCounter to MagicByte to determine correct MessageStart.</li>
+		<li>+ Trigger at PosEdge or NegEdge Function</li>
+		<li>+ Single DataAquisition - one Voltage Value</li>
+		<li>+ Time per Div Function</li>
+		<li></li>
+
+	</ul>
+
+<!-- ----------------------------------------------------------------------------------------------------------------------->
+<h3>skol_v0.1.0</h3>
+
+initial release
+
+
+</body>
+</html>

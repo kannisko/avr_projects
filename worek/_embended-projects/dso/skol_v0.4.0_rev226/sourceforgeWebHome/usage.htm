@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+	<title>SK&Aring;L - FPGA based Oscilloscope with universal Java Oscilloscope GUI.</title>
+</head>
+<body>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://apps.sourceforge.net/piwik/skol/" : "http://apps.sourceforge.net/piwik/skol/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+piwik_action_name = '';
+piwik_idsite = 1;
+piwik_url = pkBaseURL + "piwik.php";
+piwik_log(piwik_action_name, piwik_idsite, piwik_url);
+</script>
+<object><noscript><p><img src="http://apps.sourceforge.net/piwik/skol/piwik.php?idsite=1" alt="piwik"/></p></noscript></object>
+<!-- End Piwik Tag -->
+<center>
+<h1>SK&Aring;L</h1>
+<h2>USAGE : FPGA Based Oscilloscope with Java GUI</h2>
+<a href = "pics/Spartan.jpg" target="mainFrame"><img src="pics/Spartan-small.jpg"></a><br>	
+</center>
+<!-- -------------------------------------------------------------------------------- -->
+<h2>Directory Stucture</h2>
+<ul>
+	<li><b>_dev_docs</b> Only in svn avaiable</li>
+	<li><b>build</b> Compiled Applications</li>
+	<ul>
+		<li><b>FPGA</b> Spartan 3A Starter Kit ready to run bit File with installer</li>
+		<li><b>Linux</b> Controller and OsciDummy Starter Script for Linux</li>
+		<li><b>MacOsX</b> Controller and OsciDummy Applications</li>
+		<li><b>Windows</b> Controller and OsciDummy Starter batch files</li>
+		<li><b>required Libraries</b> (Prerequisite) Java Serial Communication Libraries</li>	
+		<ul>
+			<li>RXTXcomm.jar </li>
+			<li>rxtxSerial.dll </li>
+			<li>librxtxSerial.jnilib</li>
+		</ul>
+	</ul>
+	<li><b>hdl</b> VHDL Sources</li>
+	<li><b>java</b> Java Sources</li>
+	<li><b>sourceforgeWebHome</b> This Homepage</li>
+</ul>
+
+<!-- -------------------------------------------------------------------------------- -->
+<h2>You need</h2>
+<ul>
+	<li>Spartan 3a Starter Kit</li>
+	<li>Xilinx ISE (9 or higher)</li>
+	<li>SKOL Package</li>
+</ul>
+
+<h3>Prerequisites</h3>
+
+	First, make sure RXTX, Serial Library, is installed.<br>
+	
+	<ul>
+	<li>Windows</li>
+		<ul>
+		<li>RXTXcomm.jar goes in &#92jre&#92lib&#92ext (under Program Files&#92java...)</li>
+		<li>rxtxSerial.dll goes in &#92jre&#92bin (under Program Files&#92java...)</li>
+		</ul>
+	<li>MacOsX</li>
+		<ul>
+		<li>RXTXcomm.jar goes in  &#47Library&#47Java&#47Extensions</li>
+		<li>librxtxSerial.jnilib goes in &#47Library&#47Java&#47Extensions</li>
+		<li>(There is a fixperm.sh with the original RXTX source.  Fix perms is in the Mac_OS_X subdirectory)</li>
+		<li>(There is an Installer with the original RXTX source)</li>
+		</ul>
+	<li>Linux</li>
+		<ul>
+		<li>no testing yet... comments wanted</li>
+		</ul>
+	</ul>
+	
+
+
+<h3>Program FPGA</h3>
+	<ul>
+	<li>Generate Programming File yourself</li>
+		<ul>
+		<li>Project File Location: &quot;hdl&#47;SKOL&quot;.</li>
+		</ul>
+	<li>OR Use existing Bit File</li>
+		<ul>
+		<li>Project File Location: &quot;build&#47;FPGA&#47;install_Skol.bat&quot;.</li>
+		</ul>
+	</ul>
+
+<h3>Java GUI</h3>
+	<ul>
+	<li>Windows</li>
+		<ul>
+		<li>&quot;build&#92;Windows&#92;SkolController.bat&quot;</li>
+		</ul>
+	<li>MacOsX</li>
+		<ul>
+		<li>&quot;build&#47;MacOsX&#47;SkolController&quot;</li>
+		</ul>
+	<li>Linux</li>
+		<ul>
+		<li>&quot;build&#47;Linux&#47;SkolController.sh&quot;</li>
+		<li>no testing yet... comments wanted</li>
+		</ul>
+	</ul>
+
+
+	<ol>
+	<li>Set SerialPort</li>
+		<ul>
+		<li>Use &quot;DetectSerialPort&quot; Button to Display all avaiable Ports in the Textfield.</li>
+		</ul>
+	<li>&quot;Connect&quot; Button</li>
+	<li>Switch to &quot;Oscilloscope View&quot; Tab</li>
+	<li>Click &quot;Aquisition Start&quot; Button</li>
+	</ol>
+
+	<a href = "pics/OsciController_comPort.jpg" target="mainFrame"><img src="pics/OsciController_comPort-small.jpg"></a><br
+
+<h3>Use with OsciSimulator</h3>
+
+
+	<ul>
+	<li>Windows</li>
+		<ul>
+		<li>&quot;build&#47;Windows&#47;OsciDummy.bat&quot;</li>
+		</ul>
+	<li>MacOsX</li>
+		<ul>
+		<li>&quot;build&#47;MacOsX&#47;OsciDummy&quot;</li>
+		</ul>
+	<li>Linux</li>
+		<ul>
+		<li>&quot;build&#47;Linux&#47;OsciDummy.sh&quot;</li>
+		<li>no testing yet... comments wanted</li>
+		</ul>
+	</ul>
+
+
+	<ol>
+	<li>Start: OsciDummy</li>
+	<li>Start: SkolController</li>
+	<li>Switch to &quot;Ethernet UDP&quot; Tab.</li>
+	<li>&quot;Connect&quot;</li>
+	<li>Switch to &quot;Oscilloscope View&quot; Tab</li>
+	<li>&quot;Aquisition Start&quot;</li>
+	<li>&quot;Connect&quot;</li>
+		<ul>
+		<li>Use &quot;DetectSerialPort&quot; Button to Display all avaiable Ports in the Textfield.</li>
+		</ul>
+	<li>&quot;Connect&quot; Button</li>
+	<li>Switch to &quot;Oscilloscope View&quot; Tab</li>
+	<li>Click &quot;Aquisition Start&quot; Button</li>
+	</ol>
+<a href = "pics/OsciController_OsciSimulatorSinus.jpg" target="mainFrame"><img src="pics/OsciController_OsciSimulatorSinus-small.jpg"></a>
+
+
+<!-- -------------------------------------------------------------------------------- -->
+
+</body>
+</html>

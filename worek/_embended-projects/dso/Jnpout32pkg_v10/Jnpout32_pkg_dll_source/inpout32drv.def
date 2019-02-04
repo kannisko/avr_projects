@@ -1,0 +1,6 @@
+LIBRARY JNPOUT32
+
+EXPORTS
+
+Java_jnpout32_ioPort_Inp32		@1
+Java_jnpout32_ioPort_Out32		@2
