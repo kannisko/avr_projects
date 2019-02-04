@@ -1,0 +1,1468 @@
+   1               		.file	"mylcd.cpp"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__RAMPZ__ = 0x3b
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.text
+   9               	.Ltext0:
+  10               		.cfi_sections	.debug_frame
+  11               	.global	_Z11delay100us8h
+  13               	_Z11delay100us8h:
+  14               	.LFB34:
+  15               		.file 1 "hd44780.hpp"
+   1:hd44780.hpp   **** 
+   2:hd44780.hpp   **** // Komendy steruj¶ce wyùwietlaczem
+   3:hd44780.hpp   **** #define LCDC_CLS		0x01
+   4:hd44780.hpp   **** #define LCDC_HOME		0x02
+   5:hd44780.hpp   **** #define LCDC_MODE		0x04
+   6:hd44780.hpp   **** 	#define LCDC_MODER		0x02
+   7:hd44780.hpp   **** 	#define LCDC_MODEL		0
+   8:hd44780.hpp   **** 	#define LCDC_MODEMOVE	0x01
+   9:hd44780.hpp   **** #define LCDC_ON 		0x08
+  10:hd44780.hpp   **** 	#define LCDC_ONDISPLAY	0x04
+  11:hd44780.hpp   **** 	#define LCDC_ONCURSOR	0x02
+  12:hd44780.hpp   **** 	#define LCDC_ONBLINK	0x01
+  13:hd44780.hpp   **** #define LCDC_SHIFT		0x10
+  14:hd44780.hpp   **** 	#define LCDC_SHIFTDISP	0x08
+  15:hd44780.hpp   **** 	#define LCDC_SHIFTR		0x04
+  16:hd44780.hpp   **** 	#define LCDC_SHIFTL		0
+  17:hd44780.hpp   **** #define LCDC_FUNC		0x20
+  18:hd44780.hpp   **** 	#define LCDC_FUNC8b		0x10
+  19:hd44780.hpp   **** 	#define LCDC_FUNC4b		0
+  20:hd44780.hpp   **** 	#define LCDC_FUNC2L		0x08
+  21:hd44780.hpp   **** 	#define LCDC_FUNC1L		0
+  22:hd44780.hpp   **** 	#define LCDC_FUNC5x10	0x4
+  23:hd44780.hpp   **** 	#define LCDC_FUNC5x7	0
+  24:hd44780.hpp   **** #define LCDC_CGA		0x40
+  25:hd44780.hpp   **** #define LCDC_DDA		0x80
+  26:hd44780.hpp   **** 
+  27:hd44780.hpp   **** 
+  28:hd44780.hpp   **** 
+  29:hd44780.hpp   **** #define HD44780_CLEAR					0x01
+  30:hd44780.hpp   **** 
+  31:hd44780.hpp   **** #define HD44780_HOME					0x02
+  32:hd44780.hpp   **** 
+  33:hd44780.hpp   **** #define HD44780_ENTRY_MODE				0x04
+  34:hd44780.hpp   **** 	#define HD44780_EM_SHIFT_CURSOR		0
+  35:hd44780.hpp   **** 	#define HD44780_EM_SHIFT_DISPLAY	1
+  36:hd44780.hpp   **** 	#define HD44780_EM_DECREMENT		0
+  37:hd44780.hpp   **** 	#define HD44780_EM_INCREMENT		2
+  38:hd44780.hpp   **** 
+  39:hd44780.hpp   **** #define HD44780_DISPLAY_ONOFF			0x08
+  40:hd44780.hpp   **** 	#define HD44780_DISPLAY_OFF			0
+  41:hd44780.hpp   **** 	#define HD44780_DISPLAY_ON			4
+  42:hd44780.hpp   **** 	#define HD44780_CURSOR_OFF			0
+  43:hd44780.hpp   **** 	#define HD44780_CURSOR_ON			2
+  44:hd44780.hpp   **** 	#define HD44780_CURSOR_NOBLINK		0
+  45:hd44780.hpp   **** 	#define HD44780_CURSOR_BLINK		1
+  46:hd44780.hpp   **** 
+  47:hd44780.hpp   **** #define HD44780_DISPLAY_CURSOR_SHIFT	0x10
+  48:hd44780.hpp   **** 	#define HD44780_SHIFT_CURSOR		0
+  49:hd44780.hpp   **** 	#define HD44780_SHIFT_DISPLAY		8
+  50:hd44780.hpp   **** 	#define HD44780_SHIFT_LEFT			0
+  51:hd44780.hpp   **** 	#define HD44780_SHIFT_RIGHT			4
+  52:hd44780.hpp   **** 
+  53:hd44780.hpp   **** #define HD44780_FUNCTION_SET			0x20
+  54:hd44780.hpp   **** 	#define HD44780_FONT5x7				0
+  55:hd44780.hpp   **** 	#define HD44780_FONT5x10			4
+  56:hd44780.hpp   **** 	#define HD44780_ONE_LINE			0
+  57:hd44780.hpp   **** 	#define HD44780_TWO_LINE			8
+  58:hd44780.hpp   **** 	#define HD44780_4_BIT				0
+  59:hd44780.hpp   **** 	#define HD44780_8_BIT				16
+  60:hd44780.hpp   **** 
+  61:hd44780.hpp   **** #define HD44780_CGRAM_SET				0x40
+  62:hd44780.hpp   **** 
+  63:hd44780.hpp   **** #define HD44780_DDRAM_SET				0x80
+  64:hd44780.hpp   **** 
+  65:hd44780.hpp   **** 
+  66:hd44780.hpp   **** 
+  67:hd44780.hpp   **** #define delay250ns() {asm volatile("nop"::);}
+  68:hd44780.hpp   **** 
+  69:hd44780.hpp   **** #define delayus8(t)\
+  70:hd44780.hpp   **** 	{asm volatile( \
+  71:hd44780.hpp   **** 		"delayus8_loop%=: \n\t"\
+  72:hd44780.hpp   **** 			"nop \n\t"\
+  73:hd44780.hpp   **** 			"dec %[ticks] \n\t"\
+  74:hd44780.hpp   **** 			"brne delayus8_loop%= \n\t"\
+  75:hd44780.hpp   **** 	: :[ticks]"r"(t) );}
+  76:hd44780.hpp   **** 	// DEC - 1 cykl, BRNE 2 cykle, + 1xnop. Zegar 4MHz
+  77:hd44780.hpp   **** 
+  78:hd44780.hpp   **** void delay100us8(uint8_t t)
+  79:hd44780.hpp   **** {
+  16               		.loc 1 79 0
+  17               		.cfi_startproc
+  18               	.LVL0:
+  19               	/* prologue: function */
+  20               	/* frame size = 0 */
+  21               	/* stack size = 0 */
+  22               	.L__stack_usage = 0
+  80:hd44780.hpp   **** 	while(t>0)
+  81:hd44780.hpp   **** 	{
+  82:hd44780.hpp   **** //		delayus8(100); 
+  83:hd44780.hpp   **** 		delayus8(100); 
+  23               		.loc 1 83 0
+  24 0000 24E6      		ldi r18,lo8(100)
+  25 0002 30E0      		ldi r19,0
+  26               	.L3:
+  80:hd44780.hpp   **** 	while(t>0)
+  27               		.loc 1 80 0
+  28 0004 8823      		tst r24
+  29 0006 01F0      		breq .L1
+  30               		.loc 1 83 0
+  31               	/* #APP */
+  32               	 ;  83 "hd44780.hpp" 1
+  33               		delayus8_loop15: 
+  34 0008 0000      		nop 
+  35 000a 2A95      		dec r18 
+  36 000c 01F4      		brne delayus8_loop15 
+  37               		
+  38               	 ;  0 "" 2
+  84:hd44780.hpp   **** 		--t; 
+  39               		.loc 1 84 0
+  40               	/* #NOAPP */
+  41 000e 8150      		subi r24,lo8(-(-1))
+  42               	.LVL1:
+  80:hd44780.hpp   **** 	while(t>0)
+  43               		.loc 1 80 0
+  44 0010 00C0      		rjmp .L3
+  45               	.L1:
+  46 0012 0895      		ret
+  47               		.cfi_endproc
+  48               	.LFE34:
+  50               		.section	.text._ZN6avrlib3pinINS_5portbELi7EE3setEb,"axG",@progbits,_ZN6avrlib3pinINS_5portbELi7EE
+  51               		.weak	_ZN6avrlib3pinINS_5portbELi7EE3setEb
+  53               	_ZN6avrlib3pinINS_5portbELi7EE3setEb:
+  54               	.LFB45:
+  55               		.file 2 "../avrlib/pin.hpp"
+   1:../avrlib/pin.hpp **** #ifndef AVRLIB_PIN_HPP
+   2:../avrlib/pin.hpp **** #define AVRLIB_PIN_HPP
+   3:../avrlib/pin.hpp **** 
+   4:../avrlib/pin.hpp **** namespace avrlib {
+   5:../avrlib/pin.hpp **** 
+   6:../avrlib/pin.hpp **** template <typename Port, int Pin>
+   7:../avrlib/pin.hpp **** struct pin
+   8:../avrlib/pin.hpp **** {
+   9:../avrlib/pin.hpp **** 	static void set(bool value = true)
+  56               		.loc 2 9 0
+  57               		.cfi_startproc
+  58               	.LVL2:
+  59               	/* prologue: function */
+  60               	/* frame size = 0 */
+  61               	/* stack size = 0 */
+  62               	.L__stack_usage = 0
+  10:../avrlib/pin.hpp **** 	{
+  11:../avrlib/pin.hpp **** 		if (value)
+  63               		.loc 2 11 0
+  64 0000 8823      		tst r24
+  65 0002 01F0      		breq .L6
+  66               	.LBB156:
+  67               	.LBB157:
+  68               		.file 3 "../avrlib/portb.hpp"
+   1:../avrlib/portb.hpp **** #ifndef AVRLIB_PORTB_HPP
+   2:../avrlib/portb.hpp **** #define AVRLIB_PORTB_HPP
+   3:../avrlib/portb.hpp **** 
+   4:../avrlib/portb.hpp **** #include <avr/io.h>
+   5:../avrlib/portb.hpp **** 
+   6:../avrlib/portb.hpp **** namespace avrlib {
+   7:../avrlib/portb.hpp **** 
+   8:../avrlib/portb.hpp **** struct portb
+   9:../avrlib/portb.hpp **** {
+  10:../avrlib/portb.hpp **** 	static uint8_t port() { return PORTB; }
+  11:../avrlib/portb.hpp **** 	static void port(uint8_t v) { PORTB = v; }
+  69               		.loc 3 11 0
+  70 0004 2F9A      		sbi 0x5,7
+  71 0006 0895      		ret
+  72               	.L6:
+  73               	.LBE157:
+  74               	.LBE156:
+  75               	.LBB158:
+  76               	.LBB159:
+  77 0008 2F98      		cbi 0x5,7
+  78 000a 0895      		ret
+  79               	.LBE159:
+  80               	.LBE158:
+  81               		.cfi_endproc
+  82               	.LFE45:
+  84               		.section	.text._ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_I
+  85               		.weak	_ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5port
+  87               	_ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portgELi5EE
+  88               	.LFB54:
+  85:hd44780.hpp   **** 	}
+  86:hd44780.hpp   **** }
+  87:hd44780.hpp   **** 	
+  88:hd44780.hpp   **** 	
+  89:hd44780.hpp   **** template <typename RS, typename Enable, typename DB4, typename DB5, typename DB6, typename DB7> cla
+  90:hd44780.hpp   **** public:
+  91:hd44780.hpp   **** 
+  92:hd44780.hpp   **** static void initialize(){
+  93:hd44780.hpp   **** 	//ustaw odpowednie we/wy
+  94:hd44780.hpp   **** 	RS::output(true);
+  95:hd44780.hpp   **** 	Enable::output(true);
+  96:hd44780.hpp   **** 	DB4::output(true);
+  97:hd44780.hpp   **** 	DB5::output(true);
+  98:hd44780.hpp   **** 	DB6::output(true);
+  99:hd44780.hpp   **** 	DB7::output(true);
+ 100:hd44780.hpp   **** 	
+ 101:hd44780.hpp   **** _delay_ms(15); // oczekiwanie na ustalibizowanie siÍ napiecia zasilajacego
+ 102:hd44780.hpp   **** 	
+ 103:hd44780.hpp   **** 	RS::set(false);
+ 104:hd44780.hpp   **** 	Enable::set(false);
+ 105:hd44780.hpp   **** 	
+ 106:hd44780.hpp   **** 	
+ 107:hd44780.hpp   **** 	
+ 108:hd44780.hpp   **** 	sendHalf(0x03);	
+ 109:hd44780.hpp   **** 	_delay_ms(5); // czekaj 5ms
+ 110:hd44780.hpp   **** 
+ 111:hd44780.hpp   **** 	sendHalf(0x03);	
+ 112:hd44780.hpp   **** 	_delay_ms(5); // czekaj 5ms
+ 113:hd44780.hpp   **** 
+ 114:hd44780.hpp   **** 	sendHalf(0x03);	
+ 115:hd44780.hpp   **** 	_delay_ms(5); // czekaj 5ms
+ 116:hd44780.hpp   **** 
+ 117:hd44780.hpp   **** 	sendHalf(0x02);	
+ 118:hd44780.hpp   **** 	_delay_ms(1); // czekaj 5ms
+ 119:hd44780.hpp   **** 
+ 120:hd44780.hpp   **** 
+ 121:hd44780.hpp   **** command(HD44780_FUNCTION_SET | HD44780_FONT5x7 | HD44780_TWO_LINE | HD44780_4_BIT); // interfejs 4-
+ 122:hd44780.hpp   **** command(HD44780_DISPLAY_ONOFF | HD44780_DISPLAY_OFF); // wy≥πczenie wyswietlacza
+ 123:hd44780.hpp   **** command(HD44780_CLEAR); // czyszczenie zawartosÊi pamieci DDRAM
+ 124:hd44780.hpp   **** _delay_ms(2);
+ 125:hd44780.hpp   **** command(HD44780_ENTRY_MODE | HD44780_EM_SHIFT_CURSOR | HD44780_EM_INCREMENT);// inkrementaja adresu
+ 126:hd44780.hpp   **** command(HD44780_DISPLAY_ONOFF | HD44780_DISPLAY_ON | HD44780_CURSOR_ON | HD44780_CURSOR_BLINK); // 
+ 127:hd44780.hpp   **** 	
+ 128:hd44780.hpp   **** 	
+ 129:hd44780.hpp   **** /*	
+ 130:hd44780.hpp   **** 
+ 131:hd44780.hpp   **** 	sendHalf(LCDC_FUNC|LCDC_FUNC8b); 
+ 132:hd44780.hpp   **** 	delay100us8(41);
+ 133:hd44780.hpp   **** 
+ 134:hd44780.hpp   **** 	sendHalf(LCDC_FUNC|LCDC_FUNC8b);
+ 135:hd44780.hpp   **** 	delay100us8(2);
+ 136:hd44780.hpp   **** 
+ 137:hd44780.hpp   **** 	sendHalf(LCDC_FUNC|LCDC_FUNC4b);
+ 138:hd44780.hpp   **** 	delay100us8(2);
+ 139:hd44780.hpp   **** 
+ 140:hd44780.hpp   **** 	// Teraz jest ju¨ 4b. Koniec korzystania z sendHalf
+ 141:hd44780.hpp   **** 	command(LCDC_FUNC|LCDC_FUNC4b|LCDC_FUNC2L|LCDC_FUNC5x7);
+ 142:hd44780.hpp   **** 	command(LCDC_ON);
+ 143:hd44780.hpp   **** 	cls();
+ 144:hd44780.hpp   **** 	command(LCDC_MODE|LCDC_MODER);
+ 145:hd44780.hpp   **** 	command(LCDC_ON|LCDC_ONDISPLAY|LCDC_ONCURSOR);
+ 146:hd44780.hpp   **** */	
+ 147:hd44780.hpp   **** }
+ 148:hd44780.hpp   **** 
+ 149:hd44780.hpp   **** 
+ 150:hd44780.hpp   **** 
+ 151:hd44780.hpp   **** static void sendHalf(uint8_t data)
+  89               		.loc 1 151 0
+  90               		.cfi_startproc
+  91               	.LVL3:
+  92               	/* prologue: function */
+  93               	/* frame size = 0 */
+  94               	/* stack size = 0 */
+  95               	.L__stack_usage = 0
+  96               	.LBB220:
+  97               	.LBB221:
+  98               	.LBB222:
+  99               	.LBB223:
+ 100               		.loc 3 11 0
+ 101 0000 2D9A      		sbi 0x5,5
+ 102               	.LVL4:
+ 103               	.LBE223:
+ 104               	.LBE222:
+ 105               	.LBE221:
+ 106               	.LBE220:
+ 107               	.LBB224:
+ 108               	.LBB225:
+ 109               		.loc 2 11 0
+ 110 0002 80FF      		sbrs r24,0
+ 111 0004 00C0      		rjmp .L9
+ 112               	.LBB226:
+ 113               	.LBB227:
+ 114               		.file 4 "../avrlib/porte.hpp"
+   1:../avrlib/porte.hpp **** #ifndef AVRLIB_PORTE_HPP
+   2:../avrlib/porte.hpp **** #define AVRLIB_PORTE_HPP
+   3:../avrlib/porte.hpp **** 
+   4:../avrlib/porte.hpp **** #include <avr/io.h>
+   5:../avrlib/porte.hpp **** 
+   6:../avrlib/porte.hpp **** namespace avrlib {
+   7:../avrlib/porte.hpp **** 
+   8:../avrlib/porte.hpp **** struct porte
+   9:../avrlib/porte.hpp **** {
+  10:../avrlib/porte.hpp **** 	static uint8_t port() { return PORTE; }
+  11:../avrlib/porte.hpp **** 	static void port(uint8_t v) { PORTE = v; }
+ 115               		.loc 4 11 0
+ 116 0006 739A      		sbi 0xe,3
+ 117 0008 00C0      		rjmp .L10
+ 118               	.L9:
+ 119               	.LBE227:
+ 120               	.LBE226:
+ 121               	.LBB228:
+ 122               	.LBB229:
+ 123 000a 7398      		cbi 0xe,3
+ 124               	.L10:
+ 125               	.LVL5:
+ 126               	.LBE229:
+ 127               	.LBE228:
+ 128               	.LBE225:
+ 129               	.LBE224:
+ 130               	.LBB230:
+ 131               	.LBB231:
+ 132               		.loc 2 11 0
+ 133 000c 81FF      		sbrs r24,1
+ 134 000e 00C0      		rjmp .L11
+ 135               	.LBB232:
+ 136               	.LBB233:
+ 137               		.file 5 "../avrlib/portg.hpp"
+   1:../avrlib/portg.hpp **** #ifndef AVRLIB_PORTG_HPP
+   2:../avrlib/portg.hpp **** #define AVRLIB_PORTG_HPP
+   3:../avrlib/portg.hpp **** 
+   4:../avrlib/portg.hpp **** #include <avr/io.h>
+   5:../avrlib/portg.hpp **** 
+   6:../avrlib/portg.hpp **** namespace avrlib {
+   7:../avrlib/portg.hpp **** 
+   8:../avrlib/portg.hpp **** struct portg
+   9:../avrlib/portg.hpp **** {
+  10:../avrlib/portg.hpp **** 	static uint8_t port() { return PORTG; }
+  11:../avrlib/portg.hpp **** 	static void port(uint8_t v) { PORTG = v; }
+ 138               		.loc 5 11 0
+ 139 0010 A59A      		sbi 0x14,5
+ 140 0012 00C0      		rjmp .L12
+ 141               	.L11:
+ 142               	.LBE233:
+ 143               	.LBE232:
+ 144               	.LBB234:
+ 145               	.LBB235:
+ 146 0014 A598      		cbi 0x14,5
+ 147               	.L12:
+ 148               	.LVL6:
+ 149               	.LBE235:
+ 150               	.LBE234:
+ 151               	.LBE231:
+ 152               	.LBE230:
+ 153               	.LBB236:
+ 154               	.LBB237:
+ 155               		.loc 2 11 0
+ 156 0016 82FF      		sbrs r24,2
+ 157 0018 00C0      		rjmp .L13
+ 158               	.LBB238:
+ 159               	.LBB239:
+ 160               		.loc 4 11 0
+ 161 001a 759A      		sbi 0xe,5
+ 162 001c 00C0      		rjmp .L14
+ 163               	.L13:
+ 164               	.LBE239:
+ 165               	.LBE238:
+ 166               	.LBB240:
+ 167               	.LBB241:
+ 168 001e 7598      		cbi 0xe,5
+ 169               	.L14:
+ 170               	.LVL7:
+ 171               	.LBE241:
+ 172               	.LBE240:
+ 173               	.LBE237:
+ 174               	.LBE236:
+ 175               	.LBB242:
+ 176               	.LBB243:
+ 177               		.loc 2 11 0
+ 178 0020 83FF      		sbrs r24,3
+ 179 0022 00C0      		rjmp .L15
+ 180               	.LBB244:
+ 181               	.LBB245:
+ 182               		.loc 4 11 0
+ 183 0024 749A      		sbi 0xe,4
+ 184 0026 00C0      		rjmp .L16
+ 185               	.L15:
+ 186               	.LBE245:
+ 187               	.LBE244:
+ 188               	.LBB246:
+ 189               	.LBB247:
+ 190 0028 7498      		cbi 0xe,4
+ 191               	.L16:
+ 192               	.LVL8:
+ 193               	.LBE247:
+ 194               	.LBE246:
+ 195               	.LBE243:
+ 196               	.LBE242:
+ 197               	.LBB248:
+ 198               	.LBB249:
+ 199               	.LBB250:
+ 200               	.LBB251:
+ 201               		.loc 3 11 0
+ 202 002a 2D98      		cbi 0x5,5
+ 203               	.LVL9:
+ 204 002c 0895      		ret
+ 205               	.LBE251:
+ 206               	.LBE250:
+ 207               	.LBE249:
+ 208               	.LBE248:
+ 209               		.cfi_endproc
+ 210               	.LFE54:
+ 212               		.section	.text._ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_I
+ 213               		.weak	_ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5port
+ 215               	_ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portgELi5EE
+ 216               	.LFB55:
+ 152:hd44780.hpp   **** {
+ 153:hd44780.hpp   **** 	Enable::set(true);
+ 154:hd44780.hpp   **** 	DB4::set(data&0x01);
+ 155:hd44780.hpp   **** 	DB5::set(data&0x02);
+ 156:hd44780.hpp   **** 	DB6::set(data&0x04);
+ 157:hd44780.hpp   **** 	DB7::set(data&0x08);
+ 158:hd44780.hpp   **** 	Enable::set(false); 
+ 159:hd44780.hpp   **** }
+ 160:hd44780.hpp   **** 
+ 161:hd44780.hpp   **** static void send(uint8_t data)
+ 162:hd44780.hpp   **** {
+ 163:hd44780.hpp   **** 	// Starsza cz‡ùä
+ 164:hd44780.hpp   **** 	sendHalf(data>>4);
+ 165:hd44780.hpp   **** 	// M-odsza cz‡ùä
+ 166:hd44780.hpp   **** 	sendHalf(data);
+ 167:hd44780.hpp   **** 	_delay_us(50);
+ 168:hd44780.hpp   **** }
+ 169:hd44780.hpp   **** 
+ 170:hd44780.hpp   **** // Funkcje interfejsu
+ 171:hd44780.hpp   **** static void command(uint8_t command)
+ 217               		.loc 1 171 0
+ 218               		.cfi_startproc
+ 219               	.LVL10:
+ 220 0000 CF93      		push r28
+ 221               	.LCFI0:
+ 222               		.cfi_def_cfa_offset 4
+ 223               		.cfi_offset 28, -3
+ 224               	/* prologue: function */
+ 225               	/* frame size = 0 */
+ 226               	/* stack size = 1 */
+ 227               	.L__stack_usage = 1
+ 228 0002 C82F      		mov r28,r24
+ 229               	.LVL11:
+ 230               	.LBB266:
+ 231               	.LBB267:
+ 232               	.LBB268:
+ 233               	.LBB269:
+ 234               		.loc 3 11 0
+ 235 0004 2E98      		cbi 0x5,6
+ 236               	.LVL12:
+ 237               	.LBE269:
+ 238               	.LBE268:
+ 239               	.LBE267:
+ 240               	.LBE266:
+ 241               	.LBB270:
+ 242               	.LBB271:
+ 164:hd44780.hpp   **** 	// M-odsza cz‡ùä
+ 243               		.loc 1 164 0
+ 244 0006 8295      		swap r24
+ 245               	.LVL13:
+ 246 0008 8F70      		andi r24,lo8(15)
+ 247 000a 0E94 0000 		call _ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portg
+ 248               	.LVL14:
+ 166:hd44780.hpp   **** 	_delay_us(50);
+ 249               		.loc 1 166 0
+ 250 000e 8C2F      		mov r24,r28
+ 251 0010 0E94 0000 		call _ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portg
+ 252               	.LVL15:
+ 253               	.LBB272:
+ 254               	.LBB273:
+ 255               		.file 6 "/usr/lib/avr/include/util/delay.h"
+   1:/usr/lib/avr/include/util/delay.h **** /* Copyright (c) 2002, Marek Michalkiewicz
+   2:/usr/lib/avr/include/util/delay.h ****    Copyright (c) 2004,2005,2007 Joerg Wunsch
+   3:/usr/lib/avr/include/util/delay.h ****    Copyright (c) 2007  Florin-Viorel Petrov
+   4:/usr/lib/avr/include/util/delay.h ****    All rights reserved.
+   5:/usr/lib/avr/include/util/delay.h **** 
+   6:/usr/lib/avr/include/util/delay.h ****    Redistribution and use in source and binary forms, with or without
+   7:/usr/lib/avr/include/util/delay.h ****    modification, are permitted provided that the following conditions are met:
+   8:/usr/lib/avr/include/util/delay.h **** 
+   9:/usr/lib/avr/include/util/delay.h ****    * Redistributions of source code must retain the above copyright
+  10:/usr/lib/avr/include/util/delay.h ****      notice, this list of conditions and the following disclaimer.
+  11:/usr/lib/avr/include/util/delay.h **** 
+  12:/usr/lib/avr/include/util/delay.h ****    * Redistributions in binary form must reproduce the above copyright
+  13:/usr/lib/avr/include/util/delay.h ****      notice, this list of conditions and the following disclaimer in
+  14:/usr/lib/avr/include/util/delay.h ****      the documentation and/or other materials provided with the
+  15:/usr/lib/avr/include/util/delay.h ****      distribution.
+  16:/usr/lib/avr/include/util/delay.h **** 
+  17:/usr/lib/avr/include/util/delay.h ****    * Neither the name of the copyright holders nor the names of
+  18:/usr/lib/avr/include/util/delay.h ****      contributors may be used to endorse or promote products derived
+  19:/usr/lib/avr/include/util/delay.h ****      from this software without specific prior written permission.
+  20:/usr/lib/avr/include/util/delay.h **** 
+  21:/usr/lib/avr/include/util/delay.h ****   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  22:/usr/lib/avr/include/util/delay.h ****   AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  23:/usr/lib/avr/include/util/delay.h ****   IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  24:/usr/lib/avr/include/util/delay.h ****   ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+  25:/usr/lib/avr/include/util/delay.h ****   LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  26:/usr/lib/avr/include/util/delay.h ****   CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+  27:/usr/lib/avr/include/util/delay.h ****   SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  28:/usr/lib/avr/include/util/delay.h ****   INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  29:/usr/lib/avr/include/util/delay.h ****   CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  30:/usr/lib/avr/include/util/delay.h ****   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  31:/usr/lib/avr/include/util/delay.h ****   POSSIBILITY OF SUCH DAMAGE. */
+  32:/usr/lib/avr/include/util/delay.h **** 
+  33:/usr/lib/avr/include/util/delay.h **** /* $Id$ */
+  34:/usr/lib/avr/include/util/delay.h **** 
+  35:/usr/lib/avr/include/util/delay.h **** #ifndef _UTIL_DELAY_H_
+  36:/usr/lib/avr/include/util/delay.h **** #define _UTIL_DELAY_H_ 1
+  37:/usr/lib/avr/include/util/delay.h **** 
+  38:/usr/lib/avr/include/util/delay.h **** #ifndef __DOXYGEN__
+  39:/usr/lib/avr/include/util/delay.h **** #  ifndef __HAS_DELAY_CYCLES
+  40:/usr/lib/avr/include/util/delay.h **** #    define __HAS_DELAY_CYCLES 1
+  41:/usr/lib/avr/include/util/delay.h **** #  endif
+  42:/usr/lib/avr/include/util/delay.h **** #endif  /* __DOXYGEN__ */
+  43:/usr/lib/avr/include/util/delay.h **** 
+  44:/usr/lib/avr/include/util/delay.h **** #include <inttypes.h>
+  45:/usr/lib/avr/include/util/delay.h **** #include <util/delay_basic.h>
+  46:/usr/lib/avr/include/util/delay.h **** #include <math.h>
+  47:/usr/lib/avr/include/util/delay.h **** 
+  48:/usr/lib/avr/include/util/delay.h **** /** \file */
+  49:/usr/lib/avr/include/util/delay.h **** /** \defgroup util_delay <util/delay.h>: Convenience functions for busy-wait delay loops
+  50:/usr/lib/avr/include/util/delay.h ****     \code
+  51:/usr/lib/avr/include/util/delay.h ****     #define F_CPU 1000000UL  // 1 MHz
+  52:/usr/lib/avr/include/util/delay.h ****     //#define F_CPU 14.7456E6
+  53:/usr/lib/avr/include/util/delay.h ****     #include <util/delay.h>
+  54:/usr/lib/avr/include/util/delay.h ****     \endcode
+  55:/usr/lib/avr/include/util/delay.h **** 
+  56:/usr/lib/avr/include/util/delay.h ****     \note As an alternative method, it is possible to pass the
+  57:/usr/lib/avr/include/util/delay.h ****     F_CPU macro down to the compiler from the Makefile.
+  58:/usr/lib/avr/include/util/delay.h ****     Obviously, in that case, no \c \#define statement should be
+  59:/usr/lib/avr/include/util/delay.h ****     used.
+  60:/usr/lib/avr/include/util/delay.h **** 
+  61:/usr/lib/avr/include/util/delay.h ****     The functions in this header file are wrappers around the basic
+  62:/usr/lib/avr/include/util/delay.h ****     busy-wait functions from <util/delay_basic.h>.  They are meant as
+  63:/usr/lib/avr/include/util/delay.h ****     convenience functions where actual time values can be specified
+  64:/usr/lib/avr/include/util/delay.h ****     rather than a number of cycles to wait for.  The idea behind is
+  65:/usr/lib/avr/include/util/delay.h ****     that compile-time constant expressions will be eliminated by
+  66:/usr/lib/avr/include/util/delay.h ****     compiler optimization so floating-point expressions can be used
+  67:/usr/lib/avr/include/util/delay.h ****     to calculate the number of delay cycles needed based on the CPU
+  68:/usr/lib/avr/include/util/delay.h ****     frequency passed by the macro F_CPU.
+  69:/usr/lib/avr/include/util/delay.h **** 
+  70:/usr/lib/avr/include/util/delay.h ****     \note In order for these functions to work as intended, compiler
+  71:/usr/lib/avr/include/util/delay.h ****     optimizations <em>must</em> be enabled, and the delay time
+  72:/usr/lib/avr/include/util/delay.h ****     <em>must</em> be an expression that is a known constant at
+  73:/usr/lib/avr/include/util/delay.h ****     compile-time.  If these requirements are not met, the resulting
+  74:/usr/lib/avr/include/util/delay.h ****     delay will be much longer (and basically unpredictable), and
+  75:/usr/lib/avr/include/util/delay.h ****     applications that otherwise do not use floating-point calculations
+  76:/usr/lib/avr/include/util/delay.h ****     will experience severe code bloat by the floating-point library
+  77:/usr/lib/avr/include/util/delay.h ****     routines linked into the application.
+  78:/usr/lib/avr/include/util/delay.h **** 
+  79:/usr/lib/avr/include/util/delay.h ****     The functions available allow the specification of microsecond, and
+  80:/usr/lib/avr/include/util/delay.h ****     millisecond delays directly, using the application-supplied macro
+  81:/usr/lib/avr/include/util/delay.h ****     F_CPU as the CPU clock frequency (in Hertz).
+  82:/usr/lib/avr/include/util/delay.h **** 
+  83:/usr/lib/avr/include/util/delay.h **** */
+  84:/usr/lib/avr/include/util/delay.h **** 
+  85:/usr/lib/avr/include/util/delay.h **** #if !defined(__DOXYGEN__)
+  86:/usr/lib/avr/include/util/delay.h **** static __inline__ void _delay_us(double __us) __attribute__((__always_inline__));
+  87:/usr/lib/avr/include/util/delay.h **** static __inline__ void _delay_ms(double __ms) __attribute__((__always_inline__));
+  88:/usr/lib/avr/include/util/delay.h **** #endif
+  89:/usr/lib/avr/include/util/delay.h **** 
+  90:/usr/lib/avr/include/util/delay.h **** #ifndef F_CPU
+  91:/usr/lib/avr/include/util/delay.h **** /* prevent compiler error by supplying a default */
+  92:/usr/lib/avr/include/util/delay.h **** # warning "F_CPU not defined for <util/delay.h>"
+  93:/usr/lib/avr/include/util/delay.h **** /** \ingroup util_delay
+  94:/usr/lib/avr/include/util/delay.h ****     \def F_CPU
+  95:/usr/lib/avr/include/util/delay.h ****     \brief CPU frequency in Hz
+  96:/usr/lib/avr/include/util/delay.h **** 
+  97:/usr/lib/avr/include/util/delay.h ****     The macro F_CPU specifies the CPU frequency to be considered by
+  98:/usr/lib/avr/include/util/delay.h ****     the delay macros.  This macro is normally supplied by the
+  99:/usr/lib/avr/include/util/delay.h ****     environment (e.g. from within a project header, or the project's
+ 100:/usr/lib/avr/include/util/delay.h ****     Makefile).  The value 1 MHz here is only provided as a "vanilla"
+ 101:/usr/lib/avr/include/util/delay.h ****     fallback if no such user-provided definition could be found.
+ 102:/usr/lib/avr/include/util/delay.h **** 
+ 103:/usr/lib/avr/include/util/delay.h ****     In terms of the delay functions, the CPU frequency can be given as
+ 104:/usr/lib/avr/include/util/delay.h ****     a floating-point constant (e.g. 3.6864E6 for 3.6864 MHz).
+ 105:/usr/lib/avr/include/util/delay.h ****     However, the macros in <util/setbaud.h> require it to be an
+ 106:/usr/lib/avr/include/util/delay.h ****     integer value.
+ 107:/usr/lib/avr/include/util/delay.h ****  */
+ 108:/usr/lib/avr/include/util/delay.h **** # define F_CPU 1000000UL
+ 109:/usr/lib/avr/include/util/delay.h **** #endif
+ 110:/usr/lib/avr/include/util/delay.h **** 
+ 111:/usr/lib/avr/include/util/delay.h **** #ifndef __OPTIMIZE__
+ 112:/usr/lib/avr/include/util/delay.h **** # warning "Compiler optimizations disabled; functions from <util/delay.h> won't work as designed"
+ 113:/usr/lib/avr/include/util/delay.h **** #endif
+ 114:/usr/lib/avr/include/util/delay.h **** 
+ 115:/usr/lib/avr/include/util/delay.h **** #if __HAS_DELAY_CYCLES && defined(__OPTIMIZE__) && \
+ 116:/usr/lib/avr/include/util/delay.h ****   !defined(__DELAY_BACKWARD_COMPATIBLE__) &&	   \
+ 117:/usr/lib/avr/include/util/delay.h ****   __STDC_HOSTED__
+ 118:/usr/lib/avr/include/util/delay.h **** #  include <math.h>
+ 119:/usr/lib/avr/include/util/delay.h **** #endif
+ 120:/usr/lib/avr/include/util/delay.h **** 
+ 121:/usr/lib/avr/include/util/delay.h **** /**
+ 122:/usr/lib/avr/include/util/delay.h ****    \ingroup util_delay
+ 123:/usr/lib/avr/include/util/delay.h **** 
+ 124:/usr/lib/avr/include/util/delay.h ****    Perform a delay of \c __ms milliseconds, using _delay_loop_2().
+ 125:/usr/lib/avr/include/util/delay.h **** 
+ 126:/usr/lib/avr/include/util/delay.h ****    The macro F_CPU is supposed to be defined to a
+ 127:/usr/lib/avr/include/util/delay.h ****    constant defining the CPU clock frequency (in Hertz).
+ 128:/usr/lib/avr/include/util/delay.h **** 
+ 129:/usr/lib/avr/include/util/delay.h ****    The maximal possible delay is 262.14 ms / F_CPU in MHz.
+ 130:/usr/lib/avr/include/util/delay.h **** 
+ 131:/usr/lib/avr/include/util/delay.h ****    When the user request delay which exceed the maximum possible one,
+ 132:/usr/lib/avr/include/util/delay.h ****    _delay_ms() provides a decreased resolution functionality. In this
+ 133:/usr/lib/avr/include/util/delay.h ****    mode _delay_ms() will work with a resolution of 1/10 ms, providing
+ 134:/usr/lib/avr/include/util/delay.h ****    delays up to 6.5535 seconds (independent from CPU frequency).  The
+ 135:/usr/lib/avr/include/util/delay.h ****    user will not be informed about decreased resolution.
+ 136:/usr/lib/avr/include/util/delay.h **** 
+ 137:/usr/lib/avr/include/util/delay.h ****    If the avr-gcc toolchain has __builtin_avr_delay_cycles()
+ 138:/usr/lib/avr/include/util/delay.h ****    support, maximal possible delay is 4294967.295 ms/ F_CPU in MHz. For
+ 139:/usr/lib/avr/include/util/delay.h ****    values greater than the maximal possible delay, overflows results in
+ 140:/usr/lib/avr/include/util/delay.h ****    no delay i.e., 0ms.
+ 141:/usr/lib/avr/include/util/delay.h **** 
+ 142:/usr/lib/avr/include/util/delay.h ****    Conversion of \c __ms into clock cycles may not always result in
+ 143:/usr/lib/avr/include/util/delay.h ****    integer.  By default, the clock cycles rounded up to next
+ 144:/usr/lib/avr/include/util/delay.h ****    integer. This ensures that the user gets at least \c __ms
+ 145:/usr/lib/avr/include/util/delay.h ****    microseconds of delay.
+ 146:/usr/lib/avr/include/util/delay.h **** 
+ 147:/usr/lib/avr/include/util/delay.h ****    Alternatively, by defining the macro \c __DELAY_ROUND_DOWN__, or
+ 148:/usr/lib/avr/include/util/delay.h ****    \c __DELAY_ROUND_CLOSEST__, before including this header file, the
+ 149:/usr/lib/avr/include/util/delay.h ****    algorithm can be made to round down, or round to closest integer,
+ 150:/usr/lib/avr/include/util/delay.h ****    respectively.
+ 151:/usr/lib/avr/include/util/delay.h **** 
+ 152:/usr/lib/avr/include/util/delay.h ****    \note
+ 153:/usr/lib/avr/include/util/delay.h **** 
+ 154:/usr/lib/avr/include/util/delay.h ****    The implementation of _delay_ms() based on
+ 155:/usr/lib/avr/include/util/delay.h ****    __builtin_avr_delay_cycles() is not backward compatible with older
+ 156:/usr/lib/avr/include/util/delay.h ****    implementations.  In order to get functionality backward compatible
+ 157:/usr/lib/avr/include/util/delay.h ****    with previous versions, the macro \c "__DELAY_BACKWARD_COMPATIBLE__"
+ 158:/usr/lib/avr/include/util/delay.h ****    must be defined before including this header file. Also, the
+ 159:/usr/lib/avr/include/util/delay.h ****    backward compatible algorithm will be chosen if the code is
+ 160:/usr/lib/avr/include/util/delay.h ****    compiled in a <em>freestanding environment</em> (GCC option
+ 161:/usr/lib/avr/include/util/delay.h ****    \c -ffreestanding), as the math functions required for rounding are
+ 162:/usr/lib/avr/include/util/delay.h ****    not available to the compiler then.
+ 163:/usr/lib/avr/include/util/delay.h **** 
+ 164:/usr/lib/avr/include/util/delay.h ****  */
+ 165:/usr/lib/avr/include/util/delay.h **** void
+ 166:/usr/lib/avr/include/util/delay.h **** _delay_ms(double __ms)
+ 167:/usr/lib/avr/include/util/delay.h **** {
+ 168:/usr/lib/avr/include/util/delay.h **** 	double __tmp ;
+ 169:/usr/lib/avr/include/util/delay.h **** #if __HAS_DELAY_CYCLES && defined(__OPTIMIZE__) && \
+ 170:/usr/lib/avr/include/util/delay.h ****   !defined(__DELAY_BACKWARD_COMPATIBLE__) &&	   \
+ 171:/usr/lib/avr/include/util/delay.h ****   __STDC_HOSTED__
+ 172:/usr/lib/avr/include/util/delay.h **** 	uint32_t __ticks_dc;
+ 173:/usr/lib/avr/include/util/delay.h **** 	extern void __builtin_avr_delay_cycles(unsigned long);
+ 174:/usr/lib/avr/include/util/delay.h **** 	__tmp = ((F_CPU) / 1e3) * __ms;
+ 175:/usr/lib/avr/include/util/delay.h **** 
+ 176:/usr/lib/avr/include/util/delay.h **** 	#if defined(__DELAY_ROUND_DOWN__)
+ 177:/usr/lib/avr/include/util/delay.h **** 		__ticks_dc = (uint32_t)fabs(__tmp);
+ 178:/usr/lib/avr/include/util/delay.h **** 
+ 179:/usr/lib/avr/include/util/delay.h **** 	#elif defined(__DELAY_ROUND_CLOSEST__)
+ 180:/usr/lib/avr/include/util/delay.h **** 		__ticks_dc = (uint32_t)(fabs(__tmp)+0.5);
+ 181:/usr/lib/avr/include/util/delay.h **** 
+ 182:/usr/lib/avr/include/util/delay.h **** 	#else
+ 183:/usr/lib/avr/include/util/delay.h **** 		//round up by default
+ 184:/usr/lib/avr/include/util/delay.h **** 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+ 185:/usr/lib/avr/include/util/delay.h **** 	#endif
+ 186:/usr/lib/avr/include/util/delay.h **** 
+ 187:/usr/lib/avr/include/util/delay.h **** 	__builtin_avr_delay_cycles(__ticks_dc);
+ 188:/usr/lib/avr/include/util/delay.h **** 
+ 189:/usr/lib/avr/include/util/delay.h **** #else
+ 190:/usr/lib/avr/include/util/delay.h **** 	uint16_t __ticks;
+ 191:/usr/lib/avr/include/util/delay.h **** 	__tmp = ((F_CPU) / 4e3) * __ms;
+ 192:/usr/lib/avr/include/util/delay.h **** 	if (__tmp < 1.0)
+ 193:/usr/lib/avr/include/util/delay.h **** 		__ticks = 1;
+ 194:/usr/lib/avr/include/util/delay.h **** 	else if (__tmp > 65535)
+ 195:/usr/lib/avr/include/util/delay.h **** 	{
+ 196:/usr/lib/avr/include/util/delay.h **** 		//	__ticks = requested delay in 1/10 ms
+ 197:/usr/lib/avr/include/util/delay.h **** 		__ticks = (uint16_t) (__ms * 10.0);
+ 198:/usr/lib/avr/include/util/delay.h **** 		while(__ticks)
+ 199:/usr/lib/avr/include/util/delay.h **** 		{
+ 200:/usr/lib/avr/include/util/delay.h **** 			// wait 1/10 ms
+ 201:/usr/lib/avr/include/util/delay.h **** 			_delay_loop_2(((F_CPU) / 4e3) / 10);
+ 202:/usr/lib/avr/include/util/delay.h **** 			__ticks --;
+ 203:/usr/lib/avr/include/util/delay.h **** 		}
+ 204:/usr/lib/avr/include/util/delay.h **** 		return;
+ 205:/usr/lib/avr/include/util/delay.h **** 	}
+ 206:/usr/lib/avr/include/util/delay.h **** 	else
+ 207:/usr/lib/avr/include/util/delay.h **** 		__ticks = (uint16_t)__tmp;
+ 208:/usr/lib/avr/include/util/delay.h **** 	_delay_loop_2(__ticks);
+ 209:/usr/lib/avr/include/util/delay.h **** #endif
+ 210:/usr/lib/avr/include/util/delay.h **** }
+ 211:/usr/lib/avr/include/util/delay.h **** 
+ 212:/usr/lib/avr/include/util/delay.h **** /**
+ 213:/usr/lib/avr/include/util/delay.h ****    \ingroup util_delay
+ 214:/usr/lib/avr/include/util/delay.h **** 
+ 215:/usr/lib/avr/include/util/delay.h ****    Perform a delay of \c __us microseconds, using _delay_loop_1().
+ 216:/usr/lib/avr/include/util/delay.h **** 
+ 217:/usr/lib/avr/include/util/delay.h ****    The macro F_CPU is supposed to be defined to a
+ 218:/usr/lib/avr/include/util/delay.h ****    constant defining the CPU clock frequency (in Hertz).
+ 219:/usr/lib/avr/include/util/delay.h **** 
+ 220:/usr/lib/avr/include/util/delay.h ****    The maximal possible delay is 768 us / F_CPU in MHz.
+ 221:/usr/lib/avr/include/util/delay.h **** 
+ 222:/usr/lib/avr/include/util/delay.h ****    If the user requests a delay greater than the maximal possible one,
+ 223:/usr/lib/avr/include/util/delay.h ****    _delay_us() will automatically call _delay_ms() instead.  The user
+ 224:/usr/lib/avr/include/util/delay.h ****    will not be informed about this case.
+ 225:/usr/lib/avr/include/util/delay.h **** 
+ 226:/usr/lib/avr/include/util/delay.h ****    If the avr-gcc toolchain has __builtin_avr_delay_cycles()
+ 227:/usr/lib/avr/include/util/delay.h ****    support, maximal possible delay is 4294967.295 us/ F_CPU in MHz. For
+ 228:/usr/lib/avr/include/util/delay.h ****    values greater than the maximal possible delay, overflow results in
+ 229:/usr/lib/avr/include/util/delay.h ****    no delay i.e., 0us.
+ 230:/usr/lib/avr/include/util/delay.h **** 
+ 231:/usr/lib/avr/include/util/delay.h ****    Conversion of \c __us into clock cycles may not always result in
+ 232:/usr/lib/avr/include/util/delay.h ****    integer.  By default, the clock cycles rounded up to next
+ 233:/usr/lib/avr/include/util/delay.h ****    integer. This ensures that the user gets at least \c __us
+ 234:/usr/lib/avr/include/util/delay.h ****    microseconds of delay.
+ 235:/usr/lib/avr/include/util/delay.h **** 
+ 236:/usr/lib/avr/include/util/delay.h ****    Alternatively, by defining the macro \c __DELAY_ROUND_DOWN__, or
+ 237:/usr/lib/avr/include/util/delay.h ****    \c __DELAY_ROUND_CLOSEST__, before including this header file, the
+ 238:/usr/lib/avr/include/util/delay.h ****    algorithm can be made to round down, or round to closest integer,
+ 239:/usr/lib/avr/include/util/delay.h ****    respectively.
+ 240:/usr/lib/avr/include/util/delay.h **** 
+ 241:/usr/lib/avr/include/util/delay.h ****    \note
+ 242:/usr/lib/avr/include/util/delay.h **** 
+ 243:/usr/lib/avr/include/util/delay.h ****    The implementation of _delay_ms() based on
+ 244:/usr/lib/avr/include/util/delay.h ****    __builtin_avr_delay_cycles() is not backward compatible with older
+ 245:/usr/lib/avr/include/util/delay.h ****    implementations.  In order to get functionality backward compatible
+ 246:/usr/lib/avr/include/util/delay.h ****    with previous versions, the macro \c __DELAY_BACKWARD_COMPATIBLE__
+ 247:/usr/lib/avr/include/util/delay.h ****    must be defined before including this header file. Also, the
+ 248:/usr/lib/avr/include/util/delay.h ****    backward compatible algorithm will be chosen if the code is
+ 249:/usr/lib/avr/include/util/delay.h ****    compiled in a <em>freestanding environment</em> (GCC option
+ 250:/usr/lib/avr/include/util/delay.h ****    \c -ffreestanding), as the math functions required for rounding are
+ 251:/usr/lib/avr/include/util/delay.h ****    not available to the compiler then.
+ 252:/usr/lib/avr/include/util/delay.h **** 
+ 253:/usr/lib/avr/include/util/delay.h ****  */
+ 254:/usr/lib/avr/include/util/delay.h **** void
+ 255:/usr/lib/avr/include/util/delay.h **** _delay_us(double __us)
+ 256:/usr/lib/avr/include/util/delay.h **** {
+ 257:/usr/lib/avr/include/util/delay.h **** 	double __tmp ;
+ 258:/usr/lib/avr/include/util/delay.h **** #if __HAS_DELAY_CYCLES && defined(__OPTIMIZE__) && \
+ 259:/usr/lib/avr/include/util/delay.h ****   !defined(__DELAY_BACKWARD_COMPATIBLE__) &&	   \
+ 260:/usr/lib/avr/include/util/delay.h ****   __STDC_HOSTED__
+ 261:/usr/lib/avr/include/util/delay.h **** 	uint32_t __ticks_dc;
+ 262:/usr/lib/avr/include/util/delay.h **** 	extern void __builtin_avr_delay_cycles(unsigned long);
+ 263:/usr/lib/avr/include/util/delay.h **** 	__tmp = ((F_CPU) / 1e6) * __us;
+ 264:/usr/lib/avr/include/util/delay.h **** 
+ 265:/usr/lib/avr/include/util/delay.h **** 	#if defined(__DELAY_ROUND_DOWN__)
+ 266:/usr/lib/avr/include/util/delay.h **** 		__ticks_dc = (uint32_t)fabs(__tmp);
+ 267:/usr/lib/avr/include/util/delay.h **** 
+ 268:/usr/lib/avr/include/util/delay.h **** 	#elif defined(__DELAY_ROUND_CLOSEST__)
+ 269:/usr/lib/avr/include/util/delay.h **** 		__ticks_dc = (uint32_t)(fabs(__tmp)+0.5);
+ 270:/usr/lib/avr/include/util/delay.h **** 
+ 271:/usr/lib/avr/include/util/delay.h **** 	#else
+ 272:/usr/lib/avr/include/util/delay.h **** 		//round up by default
+ 273:/usr/lib/avr/include/util/delay.h **** 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+ 274:/usr/lib/avr/include/util/delay.h **** 	#endif
+ 275:/usr/lib/avr/include/util/delay.h **** 
+ 276:/usr/lib/avr/include/util/delay.h **** 	__builtin_avr_delay_cycles(__ticks_dc);
+ 256               		.loc 6 276 0
+ 257 0014 87EC      		ldi r24,lo8(199)
+ 258 0016 90E0      		ldi r25,hi8(199)
+ 259 0018 0197      	1:	sbiw r24,1
+ 260 001a 01F4      		brne 1b
+ 261 001c 00C0      		rjmp .
+ 262 001e 0000      		nop
+ 263               	.LVL16:
+ 264               	/* epilogue start */
+ 265               	.LBE273:
+ 266               	.LBE272:
+ 267               	.LBE271:
+ 268               	.LBE270:
+ 172:hd44780.hpp   **** {
+ 173:hd44780.hpp   **** 	RS::set(0);
+ 174:hd44780.hpp   **** 	send(command);
+ 175:hd44780.hpp   **** }
+ 269               		.loc 1 175 0
+ 270 0020 CF91      		pop r28
+ 271               	.LVL17:
+ 272 0022 0895      		ret
+ 273               		.cfi_endproc
+ 274               	.LFE55:
+ 276               		.section	.text._ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_I
+ 277               		.weak	_ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5port
+ 279               	_ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portgELi5EE
+ 280               	.LFB43:
+  92:hd44780.hpp   **** 	//ustaw odpowednie we/wy
+ 281               		.loc 1 92 0
+ 282               		.cfi_startproc
+ 283               	/* prologue: function */
+ 284               	/* frame size = 0 */
+ 285               	/* stack size = 0 */
+ 286               	.L__stack_usage = 0
+ 287               	.LVL18:
+ 288               	.LBB366:
+ 289               	.LBB367:
+ 290               	.LBB368:
+ 291               	.LBB369:
+  12:../avrlib/portb.hpp **** 
+  13:../avrlib/portb.hpp **** 	static uint8_t pin() { return PINB; }
+  14:../avrlib/portb.hpp **** 	static void pin(uint8_t v) { PINB = v; }
+  15:../avrlib/portb.hpp **** 
+  16:../avrlib/portb.hpp **** 	static uint8_t dir() { return DDRB; }
+  17:../avrlib/portb.hpp **** 	static void dir(uint8_t v) { DDRB = v; }
+ 292               		.loc 3 17 0
+ 293 0000 269A      		sbi 0x4,6
+ 294               	.LVL19:
+ 295               	.LBE369:
+ 296               	.LBE368:
+ 297               	.LBE367:
+ 298               	.LBE366:
+ 299               	.LBB370:
+ 300               	.LBB371:
+ 301               	.LBB372:
+ 302               	.LBB373:
+ 303 0002 259A      		sbi 0x4,5
+ 304               	.LVL20:
+ 305               	.LBE373:
+ 306               	.LBE372:
+ 307               	.LBE371:
+ 308               	.LBE370:
+ 309               	.LBB374:
+ 310               	.LBB375:
+ 311               	.LBB376:
+ 312               	.LBB377:
+  12:../avrlib/porte.hpp **** 
+  13:../avrlib/porte.hpp **** 	static uint8_t pin() { return PINE; }
+  14:../avrlib/porte.hpp **** 	static void pin(uint8_t v) { PINE = v; }
+  15:../avrlib/porte.hpp **** 
+  16:../avrlib/porte.hpp **** 	static uint8_t dir() { return DDRE; }
+  17:../avrlib/porte.hpp **** 	static void dir(uint8_t v) { DDRE = v; }
+ 313               		.loc 4 17 0
+ 314 0004 6B9A      		sbi 0xd,3
+ 315               	.LVL21:
+ 316               	.LBE377:
+ 317               	.LBE376:
+ 318               	.LBE375:
+ 319               	.LBE374:
+ 320               	.LBB378:
+ 321               	.LBB379:
+ 322               	.LBB380:
+ 323               	.LBB381:
+  12:../avrlib/portg.hpp **** 
+  13:../avrlib/portg.hpp **** 	static uint8_t pin() { return PING; }
+  14:../avrlib/portg.hpp **** 	static void pin(uint8_t v) { PING = v; }
+  15:../avrlib/portg.hpp **** 
+  16:../avrlib/portg.hpp **** 	static uint8_t dir() { return DDRG; }
+  17:../avrlib/portg.hpp **** 	static void dir(uint8_t v) { DDRG = v; }
+ 324               		.loc 5 17 0
+ 325 0006 9D9A      		sbi 0x13,5
+ 326               	.LVL22:
+ 327               	.LBE381:
+ 328               	.LBE380:
+ 329               	.LBE379:
+ 330               	.LBE378:
+ 331               	.LBB382:
+ 332               	.LBB383:
+ 333               	.LBB384:
+ 334               	.LBB385:
+ 335               		.loc 4 17 0
+ 336 0008 6D9A      		sbi 0xd,5
+ 337               	.LVL23:
+ 338               	.LBE385:
+ 339               	.LBE384:
+ 340               	.LBE383:
+ 341               	.LBE382:
+ 342               	.LBB386:
+ 343               	.LBB387:
+ 344               	.LBB388:
+ 345               	.LBB389:
+ 346 000a 6C9A      		sbi 0xd,4
+ 347               	.LVL24:
+ 348               	.LBE389:
+ 349               	.LBE388:
+ 350               	.LBE387:
+ 351               	.LBE386:
+ 352               	.LBB390:
+ 353               	.LBB391:
+ 187:/usr/lib/avr/include/util/delay.h **** 
+ 354               		.loc 6 187 0
+ 355 000c 8FE5      		ldi r24,lo8(-5537)
+ 356 000e 9AEE      		ldi r25,hi8(-5537)
+ 357 0010 0197      	1:	sbiw r24,1
+ 358 0012 01F4      		brne 1b
+ 359 0014 00C0      		rjmp .
+ 360 0016 0000      		nop
+ 361               	.LVL25:
+ 362               	.LBE391:
+ 363               	.LBE390:
+ 364               	.LBB392:
+ 365               	.LBB393:
+ 366               	.LBB394:
+ 367               	.LBB395:
+  11:../avrlib/portb.hpp **** 
+ 368               		.loc 3 11 0
+ 369 0018 2E98      		cbi 0x5,6
+ 370               	.LVL26:
+ 371               	.LBE395:
+ 372               	.LBE394:
+ 373               	.LBE393:
+ 374               	.LBE392:
+ 375               	.LBB396:
+ 376               	.LBB397:
+ 377               	.LBB398:
+ 378               	.LBB399:
+ 379 001a 2D98      		cbi 0x5,5
+ 380               	.LVL27:
+ 381               	.LBE399:
+ 382               	.LBE398:
+ 383               	.LBE397:
+ 384               	.LBE396:
+ 108:hd44780.hpp   **** 	_delay_ms(5); // czekaj 5ms
+ 385               		.loc 1 108 0
+ 386 001c 83E0      		ldi r24,lo8(3)
+ 387 001e 0E94 0000 		call _ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portg
+ 388               	.LVL28:
+ 389               	.LBB400:
+ 390               	.LBB401:
+ 187:/usr/lib/avr/include/util/delay.h **** 
+ 391               		.loc 6 187 0
+ 392 0022 8FE1      		ldi r24,lo8(19999)
+ 393 0024 9EE4      		ldi r25,hi8(19999)
+ 394 0026 0197      	1:	sbiw r24,1
+ 395 0028 01F4      		brne 1b
+ 396 002a 00C0      		rjmp .
+ 397 002c 0000      		nop
+ 398               	.LVL29:
+ 399               	.LBE401:
+ 400               	.LBE400:
+ 111:hd44780.hpp   **** 	_delay_ms(5); // czekaj 5ms
+ 401               		.loc 1 111 0
+ 402 002e 83E0      		ldi r24,lo8(3)
+ 403 0030 0E94 0000 		call _ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portg
+ 404               	.LVL30:
+ 405               	.LBB402:
+ 406               	.LBB403:
+ 187:/usr/lib/avr/include/util/delay.h **** 
+ 407               		.loc 6 187 0
+ 408 0034 8FE1      		ldi r24,lo8(19999)
+ 409 0036 9EE4      		ldi r25,hi8(19999)
+ 410 0038 0197      	1:	sbiw r24,1
+ 411 003a 01F4      		brne 1b
+ 412 003c 00C0      		rjmp .
+ 413 003e 0000      		nop
+ 414               	.LVL31:
+ 415               	.LBE403:
+ 416               	.LBE402:
+ 114:hd44780.hpp   **** 	_delay_ms(5); // czekaj 5ms
+ 417               		.loc 1 114 0
+ 418 0040 83E0      		ldi r24,lo8(3)
+ 419 0042 0E94 0000 		call _ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portg
+ 420               	.LVL32:
+ 421               	.LBB404:
+ 422               	.LBB405:
+ 187:/usr/lib/avr/include/util/delay.h **** 
+ 423               		.loc 6 187 0
+ 424 0046 8FE1      		ldi r24,lo8(19999)
+ 425 0048 9EE4      		ldi r25,hi8(19999)
+ 426 004a 0197      	1:	sbiw r24,1
+ 427 004c 01F4      		brne 1b
+ 428 004e 00C0      		rjmp .
+ 429 0050 0000      		nop
+ 430               	.LVL33:
+ 431               	.LBE405:
+ 432               	.LBE404:
+ 117:hd44780.hpp   **** 	_delay_ms(1); // czekaj 5ms
+ 433               		.loc 1 117 0
+ 434 0052 82E0      		ldi r24,lo8(2)
+ 435 0054 0E94 0000 		call _ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portg
+ 436               	.LVL34:
+ 437               	.LBB406:
+ 438               	.LBB407:
+ 187:/usr/lib/avr/include/util/delay.h **** 
+ 439               		.loc 6 187 0
+ 440 0058 8FE9      		ldi r24,lo8(3999)
+ 441 005a 9FE0      		ldi r25,hi8(3999)
+ 442 005c 0197      	1:	sbiw r24,1
+ 443 005e 01F4      		brne 1b
+ 444 0060 00C0      		rjmp .
+ 445 0062 0000      		nop
+ 446               	.LVL35:
+ 447               	.LBE407:
+ 448               	.LBE406:
+ 121:hd44780.hpp   **** command(HD44780_DISPLAY_ONOFF | HD44780_DISPLAY_OFF); // wy≥πczenie wyswietlacza
+ 449               		.loc 1 121 0
+ 450 0064 88E2      		ldi r24,lo8(40)
+ 451 0066 0E94 0000 		call _ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portg
+ 452               	.LVL36:
+ 122:hd44780.hpp   **** command(HD44780_CLEAR); // czyszczenie zawartosÊi pamieci DDRAM
+ 453               		.loc 1 122 0
+ 454 006a 88E0      		ldi r24,lo8(8)
+ 455 006c 0E94 0000 		call _ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portg
+ 456               	.LVL37:
+ 123:hd44780.hpp   **** _delay_ms(2);
+ 457               		.loc 1 123 0
+ 458 0070 81E0      		ldi r24,lo8(1)
+ 459 0072 0E94 0000 		call _ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portg
+ 460               	.LVL38:
+ 461               	.LBB408:
+ 462               	.LBB409:
+ 187:/usr/lib/avr/include/util/delay.h **** 
+ 463               		.loc 6 187 0
+ 464 0076 8FE3      		ldi r24,lo8(7999)
+ 465 0078 9FE1      		ldi r25,hi8(7999)
+ 466 007a 0197      	1:	sbiw r24,1
+ 467 007c 01F4      		brne 1b
+ 468 007e 00C0      		rjmp .
+ 469 0080 0000      		nop
+ 470               	.LVL39:
+ 471               	.LBE409:
+ 472               	.LBE408:
+ 125:hd44780.hpp   **** command(HD44780_DISPLAY_ONOFF | HD44780_DISPLAY_ON | HD44780_CURSOR_ON | HD44780_CURSOR_BLINK); // 
+ 473               		.loc 1 125 0
+ 474 0082 86E0      		ldi r24,lo8(6)
+ 475 0084 0E94 0000 		call _ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portg
+ 476               	.LVL40:
+ 126:hd44780.hpp   **** 	
+ 477               		.loc 1 126 0
+ 478 0088 8FE0      		ldi r24,lo8(15)
+ 479 008a 0C94 0000 		jmp _ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portgE
+ 480               	.LVL41:
+ 481               		.cfi_endproc
+ 482               	.LFE43:
+ 484               		.section	.text.startup,"ax",@progbits
+ 485               	.global	main
+ 487               	main:
+ 488               	.LFB41:
+ 489               		.file 7 "mylcd.cpp"
+   1:mylcd.cpp     **** #include <util/delay.h>               
+   2:mylcd.cpp     **** 			
+   3:mylcd.cpp     **** #include <avrlib/pin.hpp>
+   4:mylcd.cpp     **** #include <avrlib/portb.hpp>
+   5:mylcd.cpp     **** #include <avrlib/porte.hpp>
+   6:mylcd.cpp     **** #include <avrlib/portg.hpp>
+   7:mylcd.cpp     **** using namespace avrlib;
+   8:mylcd.cpp     **** 
+   9:mylcd.cpp     **** #include "hd44780.hpp"
+  10:mylcd.cpp     **** #include "hd44780.h"
+  11:mylcd.cpp     **** 
+  12:mylcd.cpp     **** #define LED2 7
+  13:mylcd.cpp     **** 
+  14:mylcd.cpp     **** 
+  15:mylcd.cpp     **** typedef pin<portb,LED2> ledNaPlytce;
+  16:mylcd.cpp     **** 
+  17:mylcd.cpp     **** typedef pin<portb,6> LcdRS;
+  18:mylcd.cpp     **** typedef pin<portb,5> LcdEnable;
+  19:mylcd.cpp     **** typedef pin<porte,3> LcdDB4;
+  20:mylcd.cpp     **** typedef pin<portg,5> LcdDB5;
+  21:mylcd.cpp     **** typedef pin<porte,5> LcdDB6;
+  22:mylcd.cpp     **** typedef pin<porte,4> LcdDB7;
+  23:mylcd.cpp     **** 
+  24:mylcd.cpp     **** typedef HD44780<LcdRS,LcdEnable,
+  25:mylcd.cpp     **** 	LcdDB4,LcdDB5,LcdDB6,LcdDB7> lcd;
+  26:mylcd.cpp     **** 
+  27:mylcd.cpp     **** #define onOff(on,off) \
+  28:mylcd.cpp     **** 		ledNaPlytce::set(true);\
+  29:mylcd.cpp     **** 		_delay_ms(on);\
+  30:mylcd.cpp     **** 		ledNaPlytce::set(false);\
+  31:mylcd.cpp     **** 		_delay_ms(off);
+  32:mylcd.cpp     **** 
+  33:mylcd.cpp     **** 
+  34:mylcd.cpp     **** #define BSIZE 1280
+  35:mylcd.cpp     **** int cnt1=5;
+  36:mylcd.cpp     **** int cnt2=6; 
+  37:mylcd.cpp     **** int main(){
+ 490               		.loc 7 37 0
+ 491               		.cfi_startproc
+ 492               	/* prologue: function */
+ 493               	/* frame size = 0 */
+ 494               	/* stack size = 0 */
+ 495               	.L__stack_usage = 0
+  38:mylcd.cpp     **** 
+  39:mylcd.cpp     **** cnt1 = (cnt1+1) % BSIZE;
+ 496               		.loc 7 39 0
+ 497 0000 8091 0000 		lds r24,cnt1
+ 498 0004 9091 0000 		lds r25,cnt1+1
+ 499 0008 0196      		adiw r24,1
+ 500 000a 60E0      		ldi r22,0
+ 501 000c 75E0      		ldi r23,lo8(5)
+ 502 000e 0E94 0000 		call __divmodhi4
+ 503 0012 9093 0000 		sts cnt1+1,r25
+ 504 0016 8093 0000 		sts cnt1,r24
+  40:mylcd.cpp     **** if( cnt2++ >= BSIZE ) {
+ 505               		.loc 7 40 0
+ 506 001a 8091 0000 		lds r24,cnt2
+ 507 001e 9091 0000 		lds r25,cnt2+1
+ 508 0022 9C01      		movw r18,r24
+ 509 0024 2F5F      		subi r18,-1
+ 510 0026 3F4F      		sbci r19,-1
+ 511 0028 3093 0000 		sts cnt2+1,r19
+ 512 002c 2093 0000 		sts cnt2,r18
+ 513 0030 8115      		cp r24,__zero_reg__
+ 514 0032 9540      		sbci r25,5
+ 515 0034 04F0      		brlt .L20
+  41:mylcd.cpp     **** cnt2=0;
+ 516               		.loc 7 41 0
+ 517 0036 1092 0000 		sts cnt2+1,__zero_reg__
+ 518 003a 1092 0000 		sts cnt2,__zero_reg__
+ 519               	.L20:
+ 520               	.LVL42:
+ 521               	.LBB464:
+ 522               	.LBB465:
+ 523               	.LBB466:
+ 524               	.LBB467:
+ 525               		.loc 3 17 0
+ 526 003e 279A      		sbi 0x4,7
+ 527               	.LVL43:
+ 528               	.LBE467:
+ 529               	.LBE466:
+ 530               	.LBE465:
+ 531               	.LBE464:
+  42:mylcd.cpp     **** }
+  43:mylcd.cpp     **** 
+  44:mylcd.cpp     **** 	bool state = true;
+  45:mylcd.cpp     **** 	ledNaPlytce::output(true);
+  46:mylcd.cpp     **** 	
+  47:mylcd.cpp     **** //LCD_Initalize();	
+  48:mylcd.cpp     **** 	lcd::initialize();
+ 532               		.loc 7 48 0
+ 533 0040 0E94 0000 		call _ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portg
+ 534               	.LVL44:
+ 535               	.LBB468:
+ 536               	.LBB469:
+ 537               	.LBB470:
+ 538               	.LBB471:
+ 539               	.LBB472:
+  11:../avrlib/portb.hpp **** 
+ 540               		.loc 3 11 0
+ 541 0044 2E9A      		sbi 0x5,6
+ 542               	.LVL45:
+ 543               	.LBE472:
+ 544               	.LBE471:
+ 545               	.LBE470:
+ 546               	.LBE469:
+ 547               	.LBB473:
+ 548               	.LBB474:
+ 164:hd44780.hpp   **** 	// M-odsza cz‡ùä
+ 549               		.loc 1 164 0
+ 550 0046 86E0      		ldi r24,lo8(6)
+ 551 0048 0E94 0000 		call _ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portg
+ 552               	.LVL46:
+ 166:hd44780.hpp   **** 	_delay_us(50);
+ 553               		.loc 1 166 0
+ 554 004c 81E6      		ldi r24,lo8(97)
+ 555 004e 0E94 0000 		call _ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portg
+ 556               	.LVL47:
+ 557               	.LBB475:
+ 558               	.LBB476:
+ 559               		.loc 6 276 0
+ 560 0052 87EC      		ldi r24,lo8(199)
+ 561 0054 90E0      		ldi r25,hi8(199)
+ 562 0056 0197      	1:	sbiw r24,1
+ 563 0058 01F4      		brne 1b
+ 564               	.LVL48:
+ 565               	.L22:
+ 566 005a 00C0      		rjmp .
+ 567 005c 0000      		nop
+ 568               	.LBE476:
+ 569               	.LBE475:
+ 570               	.LBE474:
+ 571               	.LBE473:
+ 572               	.LBE468:
+  49:mylcd.cpp     **** 
+  50:mylcd.cpp     **** 	
+  51:mylcd.cpp     **** 	lcd::putc('a');
+  52:mylcd.cpp     **** 	while(true){
+  53:mylcd.cpp     **** onOff(2000,2000);
+ 573               		.loc 7 53 0
+ 574 005e 81E0      		ldi r24,lo8(1)
+ 575 0060 0E94 0000 		call _ZN6avrlib3pinINS_5portbELi7EE3setEb
+ 576               	.LVL49:
+ 577               	.LBB477:
+ 578               	.LBB478:
+ 187:/usr/lib/avr/include/util/delay.h **** 
+ 579               		.loc 6 187 0
+ 580 0064 9FEF      		ldi r25,lo8(6399999)
+ 581 0066 27EA      		ldi r18,hi8(6399999)
+ 582 0068 81E6      		ldi r24,hlo8(6399999)
+ 583 006a 9150      	1:	subi r25,1
+ 584 006c 2040      		sbci r18,0
+ 585 006e 8040      		sbci r24,0
+ 586 0070 01F4      		brne 1b
+ 587 0072 00C0      		rjmp .
+ 588 0074 0000      		nop
+ 589               	.LVL50:
+ 590               	.LBE478:
+ 591               	.LBE477:
+ 592               		.loc 7 53 0
+ 593 0076 80E0      		ldi r24,0
+ 594 0078 0E94 0000 		call _ZN6avrlib3pinINS_5portbELi7EE3setEb
+ 595               	.LVL51:
+ 596               	.LBB479:
+ 597               	.LBB480:
+ 187:/usr/lib/avr/include/util/delay.h **** 
+ 598               		.loc 6 187 0
+ 599 007c 9FEF      		ldi r25,lo8(6399999)
+ 600 007e 27EA      		ldi r18,hi8(6399999)
+ 601 0080 81E6      		ldi r24,hlo8(6399999)
+ 602 0082 9150      	1:	subi r25,1
+ 603 0084 2040      		sbci r18,0
+ 604 0086 8040      		sbci r24,0
+ 605 0088 01F4      		brne 1b
+ 606 008a 00C0      		rjmp .
+ 607 008c 0000      		nop
+ 608               	.LVL52:
+ 609               	.LBE480:
+ 610               	.LBE479:
+  54:mylcd.cpp     **** onOff(2000,2000);
+ 611               		.loc 7 54 0
+ 612 008e 81E0      		ldi r24,lo8(1)
+ 613 0090 0E94 0000 		call _ZN6avrlib3pinINS_5portbELi7EE3setEb
+ 614               	.LVL53:
+ 615               	.LBB481:
+ 616               	.LBB482:
+ 187:/usr/lib/avr/include/util/delay.h **** 
+ 617               		.loc 6 187 0
+ 618 0094 9FEF      		ldi r25,lo8(6399999)
+ 619 0096 27EA      		ldi r18,hi8(6399999)
+ 620 0098 81E6      		ldi r24,hlo8(6399999)
+ 621 009a 9150      	1:	subi r25,1
+ 622 009c 2040      		sbci r18,0
+ 623 009e 8040      		sbci r24,0
+ 624 00a0 01F4      		brne 1b
+ 625 00a2 00C0      		rjmp .
+ 626 00a4 0000      		nop
+ 627               	.LVL54:
+ 628               	.LBE482:
+ 629               	.LBE481:
+ 630               		.loc 7 54 0
+ 631 00a6 80E0      		ldi r24,0
+ 632 00a8 0E94 0000 		call _ZN6avrlib3pinINS_5portbELi7EE3setEb
+ 633               	.LVL55:
+ 634               	.LBB483:
+ 635               	.LBB484:
+ 187:/usr/lib/avr/include/util/delay.h **** 
+ 636               		.loc 6 187 0
+ 637 00ac 9FEF      		ldi r25,lo8(6399999)
+ 638 00ae 27EA      		ldi r18,hi8(6399999)
+ 639 00b0 81E6      		ldi r24,hlo8(6399999)
+ 640 00b2 9150      	1:	subi r25,1
+ 641 00b4 2040      		sbci r18,0
+ 642 00b6 8040      		sbci r24,0
+ 643 00b8 01F4      		brne 1b
+ 644 00ba 00C0      		rjmp .
+ 645 00bc 0000      		nop
+ 646               	.LVL56:
+ 647               	.LBE484:
+ 648               	.LBE483:
+  55:mylcd.cpp     **** onOff(500,500);
+ 649               		.loc 7 55 0
+ 650 00be 81E0      		ldi r24,lo8(1)
+ 651 00c0 0E94 0000 		call _ZN6avrlib3pinINS_5portbELi7EE3setEb
+ 652               	.LVL57:
+ 653               	.LBB485:
+ 654               	.LBB486:
+ 187:/usr/lib/avr/include/util/delay.h **** 
+ 655               		.loc 6 187 0
+ 656 00c4 9FEF      		ldi r25,lo8(1599999)
+ 657 00c6 29E6      		ldi r18,hi8(1599999)
+ 658 00c8 88E1      		ldi r24,hlo8(1599999)
+ 659 00ca 9150      	1:	subi r25,1
+ 660 00cc 2040      		sbci r18,0
+ 661 00ce 8040      		sbci r24,0
+ 662 00d0 01F4      		brne 1b
+ 663 00d2 00C0      		rjmp .
+ 664 00d4 0000      		nop
+ 665               	.LVL58:
+ 666               	.LBE486:
+ 667               	.LBE485:
+ 668               		.loc 7 55 0
+ 669 00d6 80E0      		ldi r24,0
+ 670 00d8 0E94 0000 		call _ZN6avrlib3pinINS_5portbELi7EE3setEb
+ 671               	.LVL59:
+ 672               	.LBB487:
+ 673               	.LBB488:
+ 187:/usr/lib/avr/include/util/delay.h **** 
+ 674               		.loc 6 187 0
+ 675 00dc 9FEF      		ldi r25,lo8(1599999)
+ 676 00de 29E6      		ldi r18,hi8(1599999)
+ 677 00e0 88E1      		ldi r24,hlo8(1599999)
+ 678 00e2 9150      	1:	subi r25,1
+ 679 00e4 2040      		sbci r18,0
+ 680 00e6 8040      		sbci r24,0
+ 681 00e8 01F4      		brne 1b
+ 682 00ea 00C0      		rjmp .
+ 683 00ec 0000      		nop
+ 684               	.LVL60:
+ 685               	.LBE488:
+ 686               	.LBE487:
+  56:mylcd.cpp     **** onOff(500,500);
+ 687               		.loc 7 56 0
+ 688 00ee 81E0      		ldi r24,lo8(1)
+ 689 00f0 0E94 0000 		call _ZN6avrlib3pinINS_5portbELi7EE3setEb
+ 690               	.LVL61:
+ 691               	.LBB489:
+ 692               	.LBB490:
+ 187:/usr/lib/avr/include/util/delay.h **** 
+ 693               		.loc 6 187 0
+ 694 00f4 9FEF      		ldi r25,lo8(1599999)
+ 695 00f6 29E6      		ldi r18,hi8(1599999)
+ 696 00f8 88E1      		ldi r24,hlo8(1599999)
+ 697 00fa 9150      	1:	subi r25,1
+ 698 00fc 2040      		sbci r18,0
+ 699 00fe 8040      		sbci r24,0
+ 700 0100 01F4      		brne 1b
+ 701 0102 00C0      		rjmp .
+ 702 0104 0000      		nop
+ 703               	.LVL62:
+ 704               	.LBE490:
+ 705               	.LBE489:
+ 706               		.loc 7 56 0
+ 707 0106 80E0      		ldi r24,0
+ 708 0108 0E94 0000 		call _ZN6avrlib3pinINS_5portbELi7EE3setEb
+ 709               	.LVL63:
+ 710               	.LBB491:
+ 711               	.LBB492:
+ 187:/usr/lib/avr/include/util/delay.h **** 
+ 712               		.loc 6 187 0
+ 713 010c 9FEF      		ldi r25,lo8(1599999)
+ 714 010e 29E6      		ldi r18,hi8(1599999)
+ 715 0110 88E1      		ldi r24,hlo8(1599999)
+ 716 0112 9150      	1:	subi r25,1
+ 717 0114 2040      		sbci r18,0
+ 718 0116 8040      		sbci r24,0
+ 719 0118 01F4      		brne 1b
+ 720 011a 00C0      		rjmp .
+ 721 011c 0000      		nop
+ 722               	.LVL64:
+ 723               	.LBE492:
+ 724               	.LBE491:
+  57:mylcd.cpp     **** onOff(500,500);
+ 725               		.loc 7 57 0
+ 726 011e 81E0      		ldi r24,lo8(1)
+ 727 0120 0E94 0000 		call _ZN6avrlib3pinINS_5portbELi7EE3setEb
+ 728               	.LVL65:
+ 729               	.LBB493:
+ 730               	.LBB494:
+ 187:/usr/lib/avr/include/util/delay.h **** 
+ 731               		.loc 6 187 0
+ 732 0124 9FEF      		ldi r25,lo8(1599999)
+ 733 0126 29E6      		ldi r18,hi8(1599999)
+ 734 0128 88E1      		ldi r24,hlo8(1599999)
+ 735 012a 9150      	1:	subi r25,1
+ 736 012c 2040      		sbci r18,0
+ 737 012e 8040      		sbci r24,0
+ 738 0130 01F4      		brne 1b
+ 739 0132 00C0      		rjmp .
+ 740 0134 0000      		nop
+ 741               	.LVL66:
+ 742               	.LBE494:
+ 743               	.LBE493:
+ 744               		.loc 7 57 0
+ 745 0136 80E0      		ldi r24,0
+ 746 0138 0E94 0000 		call _ZN6avrlib3pinINS_5portbELi7EE3setEb
+ 747               	.LVL67:
+ 748               	.LBB495:
+ 749               	.LBB496:
+ 187:/usr/lib/avr/include/util/delay.h **** 
+ 750               		.loc 6 187 0
+ 751 013c 9FEF      		ldi r25,lo8(1599999)
+ 752 013e 29E6      		ldi r18,hi8(1599999)
+ 753 0140 88E1      		ldi r24,hlo8(1599999)
+ 754 0142 9150      	1:	subi r25,1
+ 755 0144 2040      		sbci r18,0
+ 756 0146 8040      		sbci r24,0
+ 757 0148 01F4      		brne 1b
+ 758 014a 00C0      		rjmp .
+ 759 014c 0000      		nop
+ 760               	.LVL68:
+ 761               	.LBE496:
+ 762               	.LBE495:
+  58:mylcd.cpp     **** onOff(2000,2000);
+ 763               		.loc 7 58 0
+ 764 014e 81E0      		ldi r24,lo8(1)
+ 765 0150 0E94 0000 		call _ZN6avrlib3pinINS_5portbELi7EE3setEb
+ 766               	.LVL69:
+ 767               	.LBB497:
+ 768               	.LBB498:
+ 187:/usr/lib/avr/include/util/delay.h **** 
+ 769               		.loc 6 187 0
+ 770 0154 9FEF      		ldi r25,lo8(6399999)
+ 771 0156 27EA      		ldi r18,hi8(6399999)
+ 772 0158 81E6      		ldi r24,hlo8(6399999)
+ 773 015a 9150      	1:	subi r25,1
+ 774 015c 2040      		sbci r18,0
+ 775 015e 8040      		sbci r24,0
+ 776 0160 01F4      		brne 1b
+ 777 0162 00C0      		rjmp .
+ 778 0164 0000      		nop
+ 779               	.LVL70:
+ 780               	.LBE498:
+ 781               	.LBE497:
+ 782               		.loc 7 58 0
+ 783 0166 80E0      		ldi r24,0
+ 784 0168 0E94 0000 		call _ZN6avrlib3pinINS_5portbELi7EE3setEb
+ 785               	.LVL71:
+ 786               	.LBB499:
+ 787               	.LBB500:
+ 187:/usr/lib/avr/include/util/delay.h **** 
+ 788               		.loc 6 187 0
+ 789 016c 9FEF      		ldi r25,lo8(6399999)
+ 790 016e 27EA      		ldi r18,hi8(6399999)
+ 791 0170 81E6      		ldi r24,hlo8(6399999)
+ 792 0172 9150      	1:	subi r25,1
+ 793 0174 2040      		sbci r18,0
+ 794 0176 8040      		sbci r24,0
+ 795 0178 01F4      		brne 1b
+ 796 017a 00C0      		rjmp .
+ 797 017c 0000      		nop
+ 798               	.LVL72:
+ 799               	.LBE500:
+ 800               	.LBE499:
+  59:mylcd.cpp     **** onOff(2000,2000);
+ 801               		.loc 7 59 0
+ 802 017e 81E0      		ldi r24,lo8(1)
+ 803 0180 0E94 0000 		call _ZN6avrlib3pinINS_5portbELi7EE3setEb
+ 804               	.LVL73:
+ 805               	.LBB501:
+ 806               	.LBB502:
+ 187:/usr/lib/avr/include/util/delay.h **** 
+ 807               		.loc 6 187 0
+ 808 0184 9FEF      		ldi r25,lo8(6399999)
+ 809 0186 27EA      		ldi r18,hi8(6399999)
+ 810 0188 81E6      		ldi r24,hlo8(6399999)
+ 811 018a 9150      	1:	subi r25,1
+ 812 018c 2040      		sbci r18,0
+ 813 018e 8040      		sbci r24,0
+ 814 0190 01F4      		brne 1b
+ 815 0192 00C0      		rjmp .
+ 816 0194 0000      		nop
+ 817               	.LVL74:
+ 818               	.LBE502:
+ 819               	.LBE501:
+ 820               		.loc 7 59 0
+ 821 0196 80E0      		ldi r24,0
+ 822 0198 0E94 0000 		call _ZN6avrlib3pinINS_5portbELi7EE3setEb
+ 823               	.LVL75:
+ 824               	.LBB503:
+ 825               	.LBB504:
+ 187:/usr/lib/avr/include/util/delay.h **** 
+ 826               		.loc 6 187 0
+ 827 019c 9FEF      		ldi r25,lo8(6399999)
+ 828 019e 27EA      		ldi r18,hi8(6399999)
+ 829 01a0 81E6      		ldi r24,hlo8(6399999)
+ 830 01a2 9150      	1:	subi r25,1
+ 831 01a4 2040      		sbci r18,0
+ 832 01a6 8040      		sbci r24,0
+ 833 01a8 01F4      		brne 1b
+ 834 01aa 00C0      		rjmp .L22
+ 835               	.LBE504:
+ 836               	.LBE503:
+ 837               		.cfi_endproc
+ 838               	.LFE41:
+ 840               	.global	cnt2
+ 841               		.data
+ 844               	cnt2:
+ 845 0000 0600      		.word	6
+ 846               	.global	cnt1
+ 849               	cnt1:
+ 850 0002 0500      		.word	5
+ 851               		.text
+ 852               	.Letext0:
+ 853               		.file 8 "/usr/lib/avr/include/stdint.h"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 mylcd.cpp
+     /tmp/ccAW9Lzg.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccAW9Lzg.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccAW9Lzg.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccAW9Lzg.s:5      *ABS*:000000000000003b __RAMPZ__
+     /tmp/ccAW9Lzg.s:6      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccAW9Lzg.s:7      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccAW9Lzg.s:13     .text:0000000000000000 _Z11delay100us8h
+     /tmp/ccAW9Lzg.s:33     .text:0000000000000008 delayus8_loop15
+     /tmp/ccAW9Lzg.s:53     .text._ZN6avrlib3pinINS_5portbELi7EE3setEb:0000000000000000 _ZN6avrlib3pinINS_5portbELi7EE3setEb
+     /tmp/ccAW9Lzg.s:87     .text._ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portgELi5EEENS1_IS5_Li5EEENS1_IS5_Li4EEEE8sendHalfEh:0000000000000000 _ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portgELi5EEENS1_IS5_Li5EEENS1_IS5_Li4EEEE8sendHalfEh
+     /tmp/ccAW9Lzg.s:215    .text._ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portgELi5EEENS1_IS5_Li5EEENS1_IS5_Li4EEEE7commandEh:0000000000000000 _ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portgELi5EEENS1_IS5_Li5EEENS1_IS5_Li4EEEE7commandEh
+     /tmp/ccAW9Lzg.s:279    .text._ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portgELi5EEENS1_IS5_Li5EEENS1_IS5_Li4EEEE10initializeEv:0000000000000000 _ZN7HD44780IN6avrlib3pinINS0_5portbELi6EEENS1_IS2_Li5EEENS1_INS0_5porteELi3EEENS1_INS0_5portgELi5EEENS1_IS5_Li5EEENS1_IS5_Li4EEEE10initializeEv
+     /tmp/ccAW9Lzg.s:487    .text.startup:0000000000000000 main
+     /tmp/ccAW9Lzg.s:849    .data:0000000000000002 cnt1
+     /tmp/ccAW9Lzg.s:844    .data:0000000000000000 cnt2
+
+UNDEFINED SYMBOLS
+__divmodhi4
+__do_copy_data

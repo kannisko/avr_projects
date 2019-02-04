@@ -1,0 +1,61 @@
+
+Prawa autorskie zastrze¿one.
+Projekt nie mo¿e byæ publikowany i wykorzystywany do dzia³alnoœci komercyjnej bez zgody autora
+
+-----------------------------------------------
+Chrono mierzy:
+-----------------------------------------------
+- energiê
+- prêdkoœæ ( od 6m/s)
+- energiê œredni¹
+
+dodatkowo wyœwietla nr strza³u (od 1 -99)
+
+
+
+
+-----------------------------------------------
+Wprowadzanie wagi œrutu:
+-----------------------------------------------
+Nacisn¹æ przycisk SW1. Zmiany SW2 i SW3. D³u¿sze przytrzymanie - zmiana nastêpuje automatycznie
+Ponowne wciœniêcie SW1 - powrót do pomiaru i zapis wagi œrutu do EEPROM.
+
+
+
+
+
+-----------------------------------------------
+Pomiar i wyœwietlenie energii œredniej
+-----------------------------------------------
+Nacisn¹æ SW2 - nast¹pi przejœcie do licznika numeru strza³u
+Nastêpnie ponownie wcisn¹æ SW2 - pojawi siê energia œrednia
+Mo¿na dokonywaæ pomiaru przy wyœwietlaniu energii œredniej i numeru strza³u.
+
+
+
+Naciœniêcie SW3 powoduje kasowanie pomiaru i powrót do pocz¹tku.
+
+
+
+
+-----------------------------------------------
+
+
+UWAGI:
+
+-----------------------------------------------
+
+Bity konfiguracyjne ATmega8L (ustawiæ w programatorze - w moim progrmatorze ustawienie oznacza 0 )
+
+
+SUT0=0
+SUT1=0
+BODEN=0
+BODLEVEL=0
+CKPOT=0
+
+Pozosta³e =1
+
+
+
+-----------------------------------------------
