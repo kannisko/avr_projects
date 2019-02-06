@@ -6,6 +6,7 @@
 #include <usart_base.hpp>
 using namespace avrlib;
 
+
 #ifndef cbi
 #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
 #endif
@@ -34,7 +35,7 @@ uint8_t ADCBuffer[ADCBUFFERSIZE];
 uint16_t ADCCounter;
 uint16_t stopIndex;
 bool freeze;
-uint8_t freqDivisor=3;
+uint8_t freqDivisor=7;
 void startADC( void );
 void initADC(void);
 
@@ -138,7 +139,7 @@ void rdProcedure(){
 			rdIdx = 0;
 			return;
 		}
-		if( c == "#"){
+		if( c == '#'){
 			rdIdx = 0;
 		}
 		rdBuffer[rdIdx++] = c;
