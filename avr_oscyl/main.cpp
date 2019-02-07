@@ -4,6 +4,9 @@
 #include <avr/interrupt.h>
 #include <usart0.hpp>
 #include <usart_base.hpp>
+#include <pin.hpp>
+#include <portb.hpp>
+#include <timer1.hpp>
 using namespace avrlib;
 
 
@@ -38,7 +41,7 @@ bool freeze;
 uint8_t freqDivisor=7;
 void startADC( void );
 void initADC(void);
-
+void initPWM(void);
 void sendByte(uint8_t val);
 void sendBuffer(uint8_t* buffer, int length);
 
@@ -59,6 +62,10 @@ void send( const char *msg);
 void init();
 void loop();
 
+//PB5 OC1A/PCINT5 (Output Compare and PWM Output A for Timer/Counter1 or Pin Change Interrupt 5)
+typedef pin<portb,5> pwmOut;
+timer1 _timer1;
+
 int main(){
 	while(1){
 		init();
@@ -67,6 +74,7 @@ int main(){
 	}
 }
 void init(){
+	initPWM();
 	initADC();
 	serial0.open_ubrr(detail::get_ubrr(115200),false);
 	seIdx = seStopIdx = 0;
@@ -78,6 +86,7 @@ void init(){
 //dupa
 void loop(){
 	while(keepRunning){
+//		pwmOut::set(!pwmOut::get());
 		rdProcedure();
 		if ( freeze )
 		{
@@ -203,6 +212,31 @@ ISR(ADC_vect)
 	}
 }
 
+void timer1_init() {
+
+	// Set up timer to toggle OC1A on match of OCR1A in CTC mode
+	TCCR1A |= (1 << COM1A0);
+
+	// set up timer with prescaler = 1024 and CTC mode
+	TCCR1B |= (1 << WGM12) | (1 << CS12) | (1 << CS10);
+
+	// Set CTC compare value to 1Hz at 16MHz AVR clock, with a prescaler of 1024
+	// whenever a match occurs OC1A toggles
+
+	OCR1A = 156;
+
+}
+
+
+void initPWM(){
+	pwmOut::output(true);
+	timer1_init();
+//	timer1::clock_source(timer_fosc_1024);
+//	timer1::mode(timer_mode_pwmp_8);
+//	timer1::ocra::mode(timer_ocr_mode_positive);
+//	_timer1.value(100);
+
+}
 #define ADCPIN		0
 void initADC(void)
 {
