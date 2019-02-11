@@ -25,7 +25,7 @@ using namespace avrlib;
 
 
 #define CMD_GET_VERSION "#gv"
-#define CMD_SET_SPEED "#ss "
+#define CMD_SET_SPEED "#ss"
 #define CMD_SET_TRIGGER_TYPE "#stt"
 #define CMD_SET_TRIGGER_VALUE "#stv"
 #define CMD_SET_TRIGGER_SLOPE "#sts"
@@ -39,6 +39,13 @@ uint16_t ADCCounter;
 uint16_t stopIndex;
 bool freeze;
 uint8_t freqDivisor=7;
+uint8_t triggerLevel = 120;
+bool triggerSlopeRising = true;
+volatile bool triggered;
+volatile bool valid_prev;
+volatile uint8_t prevValue;
+
+
 void startADC( void );
 void initADC(void);
 void initPWM(void);
@@ -98,14 +105,11 @@ void loop(){
 			//Serial.print("End of Buffer");
 			sendBuffer( (uint8_t *)ADCBuffer + ADCCounter, ADCBUFFERSIZE - ADCCounter );
 			sendBuffer( (uint8_t *)ADCBuffer, ADCCounter );
-
+			freeze = false;
 			// Turn off errorPin
 			//digitalWrite( errorPin, LOW );
 			cbi(PORTB,PORTB5);
 
-			ADCCounter=0;
-			stopIndex=0;
-			freeze = false;
 
 			// Clear buffer
 			//memset( (void *)ADCBuffer, 0, sizeof(ADCBuffer) );
@@ -181,9 +185,26 @@ void dispatchMessage(){
 		return;
 	}
 	if(!strncmp(rdBuffer,CMD_SET_SPEED,sizeof(CMD_SET_SPEED)-1)){
-		freqDivisor = atoi(rdBuffer+sizeof(CMD_SET_SPEED)-1);
+		freqDivisor = atoi(rdBuffer+sizeof(CMD_SET_SPEED));
 		char tmp[5];
 		send(itoa(freqDivisor,tmp,10));
+		return;
+	}
+
+	if(!strncmp(rdBuffer,CMD_SET_TRIGGER_VALUE,sizeof(CMD_SET_TRIGGER_VALUE)-1)){
+		triggerLevel = atoi(rdBuffer+sizeof(CMD_SET_TRIGGER_VALUE));
+		char tmp[5];
+		send(itoa(triggerLevel,tmp,10));
+		return;
+	}
+
+	if(!strncmp(rdBuffer,CMD_SET_TRIGGER_SLOPE,sizeof(CMD_SET_TRIGGER_SLOPE)-1)){
+		char s = rdBuffer[sizeof(CMD_SET_TRIGGER_SLOPE)];
+		triggerSlopeRising = s =='r';
+		char tmp[2];
+		tmp[0] = triggerSlopeRising ? 'r' : 'f';
+		tmp[1] = 0;
+		send(tmp);
 		return;
 	}
 
@@ -191,25 +212,51 @@ void dispatchMessage(){
 
 }
 
+uint8_t dummy1;
 uint8_t dummy;
+
 ISR(ADC_vect)
 {
 	// When ADCL is read, the ADC Data Register is not updated until ADCH
 	// is read. Consequently, if the result is left adjusted and no more
 	// than 8-bit precision is required, it is sufficient to read ADCH.
 	// Otherwise, ADCL must be read first, then ADCH.
-	dummy = ADCL;
-	ADCBuffer[ADCCounter] = ADCH;
+//	dummy1 = ADCL;
+	dummy = ADCH;
+	if( triggered ){
+		ADCBuffer[ADCCounter] = dummy;
 
-	if (++ADCCounter >= ADCBUFFERSIZE) ADCCounter = 0;
+		if (++ADCCounter >= ADCBUFFERSIZE) ADCCounter = 0;
 
-	if ( stopIndex == ADCCounter )
-	{
-		// Freeze situation
-		// Disable ADC and stop Free Running Conversion Mode
-		cbi( ADCSRA, ADEN );
-		freeze = true;
+		if ( stopIndex == ADCCounter )
+		{
+			// Freeze situation
+			// Disable ADC and stop Free Running Conversion Mode
+			cbi( ADCSRA, ADEN );
+			freeze = true;
+		}
+		return;
 	}
+
+	if( valid_prev){
+		if(prevValue == dummy){
+			return;
+		}
+		if( triggerSlopeRising){
+			if(  dummy >= prevValue && prevValue <= triggerLevel){
+				triggered = true;
+				return;
+			}
+		}else{
+			if( dummy <= prevValue && prevValue >= triggerLevel){
+				triggered = true;
+				return;
+			}
+		}
+	}
+	prevValue = dummy;
+	valid_prev = true;
+
 }
 
 void timer1_init() {
@@ -476,7 +523,12 @@ void startADC( void )
 	}else{
 		cbi(ADCSRA,ADPS0);
 	}
+	ADCCounter=0;
+	stopIndex=0;
+	freeze = false;
 
+	triggered = false;
+	valid_prev = false;
 
 	// Enable ADC
 	sbi(ADCSRA,ADEN);
