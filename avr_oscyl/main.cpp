@@ -90,9 +90,53 @@ void init(){
 	sei();
 }
 
-//dupa
+//prejścia na !rx_empty
+//iddle -> read
+//read -> read
+//waiting_trigger -> read
+//writing -> read
+
+//read
+
+enum State{
+	IDLE,
+	COMMAND_READING,
+	COMMAND_WRITNG,
+	WAITING_FOR_TRIGGER,
+	WAITING_FOR_DATA,
+	WRITNG_DATA
+};
+
+volatile State currentState;
+void setStateIdle();
+void setStateRead();
+
+void setStateIdle(){
+	currentState = IDLE;
+	// Disable ADC and stop Free Running Conversion Mode
+	cbi( ADCSRA, ADEN );
+}
+
+
+
+
 void loop(){
 	while(keepRunning){
+		if( !serial0.rx_empty()){
+			setStateRead();
+			rdProcedure(serial0.recv());
+		}
+		if(){
+
+		}
+	}
+}
+
+void loop1(){
+	while(keepRunning){
+		if( !serial0.rx_empty()){
+
+		}
 //		pwmOut::set(!pwmOut::get());
 		rdProcedure();
 		if ( freeze )
