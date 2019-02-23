@@ -63,7 +63,7 @@ uint8_t rdIdx;
 bool keepRunning;
 
 void seProcedure();
-void rdProcedure();
+void rdProcedure(char c);
 void dispatchMessage();
 void send( const char *msg);
 void init();
@@ -119,15 +119,15 @@ void setStateIdle(){
 
 
 
+void setStateRead(){
+
+}
 
 void loop(){
 	while(keepRunning){
 		if( !serial0.rx_empty()){
 			setStateRead();
 			rdProcedure(serial0.recv());
-		}
-		if(){
-
 		}
 	}
 }
@@ -138,7 +138,7 @@ void loop1(){
 
 		}
 //		pwmOut::set(!pwmOut::get());
-		rdProcedure();
+		rdProcedure('c');
 		if ( freeze )
 		{
 		//	dshow("# Frozen");
@@ -182,10 +182,8 @@ void sendBuffer(uint8_t* buffer, int length){
 }
 
 
-void rdProcedure(){
+void rdProcedure(char c){
 	if( !serial0.rx_empty()){
-		char c;
-		c = serial0.recv();
 		if( c == '\n'){
 			rdBuffer[rdIdx] = 0;
 			dispatchMessage();
