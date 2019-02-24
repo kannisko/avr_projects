@@ -38,7 +38,7 @@
 							<tool id="de.innot.avreclipse.tool.cppcompiler.app.debug.908076290" name="AVR C++ Compiler" superClass="de.innot.avreclipse.tool.cppcompiler.app.debug">
 								<option id="de.innot.avreclipse.cppcompiler.option.debug.level.1323531857" name="Generate Debugging Info" superClass="de.innot.avreclipse.cppcompiler.option.debug.level"/>
 								<option id="de.innot.avreclipse.cppcompiler.option.optimize.1317661383" name="Optimization Level" superClass="de.innot.avreclipse.cppcompiler.option.optimize"/>
-								<option id="de.innot.avreclipse.cppcompiler.option.incpath.1022901806" superClass="de.innot.avreclipse.cppcompiler.option.incpath" valueType="includePath">
+								<option id="de.innot.avreclipse.cppcompiler.option.incpath.1022901806" name="Include Paths (-I)" superClass="de.innot.avreclipse.cppcompiler.option.incpath" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/avrlib}&quot;"/>
 								</option>
 								<inputType id="de.innot.avreclipse.cppcompiler.input.347483684" superClass="de.innot.avreclipse.cppcompiler.input"/>
