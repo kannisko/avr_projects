@@ -103,8 +103,17 @@ void setStateRead(){
 void setStateWrite(){
 	currentState = WRITING;
 }
+
 void setStateWaitTrigger(){
+	wrIdx=0;
+	wrStopIdx=0xFFFF;
+	currentState = WAITING_FOR_TRIGGER;
 	startADC();
+}
+
+void setStateWaitData(){
+
+	currentState = WAITING_FOR_DATA;
 }
 
 
@@ -212,6 +221,11 @@ ISR(ADC_vect)
 	if( wrIdx >= sizeof(buffer)){
 		wrIdx=0;
 	}
+	if(wrIdx == wrStopIdx){
+		setStateWrite();
+		return;
+	}
+
 //	if( triggered ){
 //		ADCBuffer[ADCCounter] = dummy;
 //
