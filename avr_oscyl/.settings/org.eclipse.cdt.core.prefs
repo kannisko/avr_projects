@@ -1,0 +1,11 @@
+eclipse.preferences.version=1
+environment/project/de.innot.avreclipse.configuration.app.debug.39366659/AVRDUDEPATH/delimiter=;
+environment/project/de.innot.avreclipse.configuration.app.debug.39366659/AVRDUDEPATH/operation=replace
+environment/project/de.innot.avreclipse.configuration.app.debug.39366659/AVRDUDEPATH/value=c\:\\avrdude
+environment/project/de.innot.avreclipse.configuration.app.debug.39366659/append=true
+environment/project/de.innot.avreclipse.configuration.app.debug.39366659/appendContributed=true
+environment/project/de.innot.avreclipse.configuration.app.release.147816654/AVRDUDEPATH/delimiter=;
+environment/project/de.innot.avreclipse.configuration.app.release.147816654/AVRDUDEPATH/operation=replace
+environment/project/de.innot.avreclipse.configuration.app.release.147816654/AVRDUDEPATH/value=c\:\\avrdude
+environment/project/de.innot.avreclipse.configuration.app.release.147816654/append=true
+environment/project/de.innot.avreclipse.configuration.app.release.147816654/appendContributed=true
