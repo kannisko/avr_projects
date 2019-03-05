@@ -136,11 +136,12 @@ void rdProcedure(uint8_t c){
 	if( rdIdx >= MAX_COMMAND_LENGTH){
 		return;
 	}
-	buffer[rdIdx++] = c;
 	if( c == '\n'){
 		buffer[rdIdx] = 0;
 		dispatchMessage();
+		return;
 	}
+	buffer[rdIdx++] = c;
 }
 
 
@@ -168,6 +169,8 @@ void dispatchMessage(){
 		setStateWaitTrigger();
 		return;
 	}
+
+	if((val=getInt()))
 
 //	if(!strncmp((const char*)buffer,CMD_SET_SPEED,sizeof(CMD_SET_SPEED)-1)){
 //		freqDivisor = atoi(rdBuffer+sizeof(CMD_SET_SPEED));
