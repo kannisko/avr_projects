@@ -49,7 +49,9 @@ uint8_t rdIdx;
 uint16_t wrIdx;
 uint16_t wrStopIdx;
 
-uint8_t freqDivisor=7;
+uint8_t freqDivisor;
+uint8_t triggerLevel;
+bool triggerSlopeRising;
 
 void seProcedure();
 void rdProcedure(char c);
@@ -170,31 +172,30 @@ void dispatchMessage(){
 		return;
 	}
 
-	if((val=getInt()))
 
-//	if(!strncmp((const char*)buffer,CMD_SET_SPEED,sizeof(CMD_SET_SPEED)-1)){
-//		freqDivisor = atoi(rdBuffer+sizeof(CMD_SET_SPEED));
-//		char tmp[5];
-//		send(itoa(freqDivisor,tmp,10));
-//		return;
-//	}
-//
-//	if(!strncmp((const char*)buffer,CMD_SET_TRIGGER_VALUE,sizeof(CMD_SET_TRIGGER_VALUE)-1)){
-//		triggerLevel = atoi(rdBuffer+sizeof(CMD_SET_TRIGGER_VALUE));
-//		char tmp[5];
-//		send(itoa(triggerLevel,tmp,10));
-//		return;
-//	}
-//
-//	if(!strncmp((const char*)buffer,CMD_SET_TRIGGER_SLOPE,sizeof(CMD_SET_TRIGGER_SLOPE)-1)){
-//		char s = rdBuffer[sizeof(CMD_SET_TRIGGER_SLOPE)];
-//		triggerSlopeRising = s =='r';
-//		char tmp[2];
-//		tmp[0] = triggerSlopeRising ? 'r' : 'f';
-//		tmp[1] = 0;
-//		send(tmp);
-//		return;
-//	}
+	if(!strncmp((const char*)buffer,CMD_SET_SPEED,sizeof(CMD_SET_SPEED)-1)){
+		freqDivisor = atoi((const char*)buffer+sizeof(CMD_SET_SPEED));
+		char tmp[5];
+		send(itoa(freqDivisor,tmp,10));
+		return;
+	}
+
+	if(!strncmp((const char*)buffer,CMD_SET_TRIGGER_VALUE,sizeof(CMD_SET_TRIGGER_VALUE)-1)){
+		triggerLevel = atoi((const char*)buffer+sizeof(CMD_SET_TRIGGER_VALUE));
+		char tmp[5];
+		send(itoa(triggerLevel,tmp,10));
+		return;
+	}
+
+	if(!strncmp((const char*)buffer,CMD_SET_TRIGGER_SLOPE,sizeof(CMD_SET_TRIGGER_SLOPE)-1)){
+		char s = buffer[sizeof(CMD_SET_TRIGGER_SLOPE)];
+		triggerSlopeRising = s =='r';
+		char tmp[2];
+		tmp[0] = triggerSlopeRising ? 'r' : 'f';
+		tmp[1] = 0;
+		send(tmp);
+		return;
+	}
 }
 
 
